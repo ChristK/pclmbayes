@@ -1,0 +1,5 @@
+"scenario","accept","ISE","bias_mean","bias_sd","bias_median","bias_q05","bias_q95","cover_mean_90","cover_sd_90"
+"S1: Gamma(5,1) | equal | unimodal prior",0.612,0.000145,-0.0138,-0.0394,0.00113,0.0277,-0.187,TRUE,TRUE
+"S2: Lognormal | equal | OPEN last bin (30+)",0.616,2e-04,-0.00581,0.00798,-0.068,-0.0518,0.179,TRUE,TRUE
+"S3: Bimodal | UNequal | unconstrained",0.636,0.00023,0.014,0.0155,0.383,-0.0158,0.0112,TRUE,TRUE
+"S4: Trimodal | equal | unconstrained",0.593,0.00108,0.0171,-0.0255,-0.0388,-0.0165,0.0433,TRUE,TRUE

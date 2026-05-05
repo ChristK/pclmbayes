@@ -1,0 +1,32 @@
+# R-specific
+.Rproj.user/
+.Rhistory
+.RData
+.Ruserdata
+.Renviron
+*.Rproj
+*_cache/
+*.utf8.md
+*.knit.md
+
+# Build artefacts
+/*.tar.gz
+/*.tgz
+/*.zip
+/pclmbayes.Rcheck/
+/docs/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.idea/
+.vscode/
+*~
+*.swp
+
+# Test artefacts (we keep .png/.csv outputs since they ARE the validation
+# evidence; only ignore intermediate vignette outputs)
+tests/vignette-output.md
+tests/figure/

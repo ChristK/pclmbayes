@@ -1,0 +1,18 @@
+citHeader("To cite the pclmbayes package, please use:")
+
+bibentry(
+  bibtype  = "Article",
+  title    = "Bayesian density estimation from grouped continuous data",
+  author   = c(person("Philippe",   "Lambert"),
+               person("Paul H. C.", "Eilers")),
+  journal  = "Computational Statistics and Data Analysis",
+  year     = "2009",
+  volume   = "53",
+  number   = "4",
+  pages    = "1388--1399",
+  doi      = "10.1016/j.csda.2008.11.022",
+  textVersion = paste("Lambert, P. and Eilers, P. H. C. (2009).",
+                       "Bayesian density estimation from grouped continuous",
+                       "data. Computational Statistics and Data Analysis,",
+                       "53(4), 1388-1399.")
+)
