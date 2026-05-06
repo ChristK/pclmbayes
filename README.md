@@ -1,5 +1,12 @@
 # pclmbayes
 
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/ChristK/pclmbayes/actions/workflows/R-CMD-check.yml/badge.svg)](https://github.com/ChristK/pclmbayes/actions/workflows/R-CMD-check.yml)
+[![test-coverage](https://github.com/ChristK/pclmbayes/actions/workflows/test-coverage.yml/badge.svg)](https://github.com/ChristK/pclmbayes/actions/workflows/test-coverage.yml)
+[![Codecov test coverage](https://codecov.io/gh/ChristK/pclmbayes/branch/main/graph/badge.svg)](https://app.codecov.io/gh/ChristK/pclmbayes)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+<!-- badges: end -->
+
 **Bayesian density estimation and exact ungrouping from grouped
 continuous data, via the penalised composite link model**
 

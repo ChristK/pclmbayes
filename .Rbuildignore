@@ -13,3 +13,21 @@
 ^cran-comments\.md$
 ^codecov\.yml$
 ^CRAN-RELEASE$
+# Standalone validation/diagnostic scripts (not testthat tests).
+# These are kept in the GitHub repo for reproducibility but are not
+# shipped in the built tarball or run by R CMD check.
+^tests/manual-verify\.R$
+^tests/manual-figure\.R$
+^tests/synthetic-eval\.R$
+^tests/validate-ungrouping\.R$
+^tests/validate-uncertainty\.R$
+^tests/diagnose-s2\.R$
+^tests/diagnose-s2b\.R$
+^tests/diagnose-totals\.R$
+^tests/render-vignette\.R$
+^tests/test-exact-totals\.R$
+^tests/test-posterior-predict\.R$
+^tests/.*\.png$
+^tests/.*\.csv$
+^tests/.*\.md$
+^tests/bloodlead_fit\..*$
