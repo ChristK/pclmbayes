@@ -116,7 +116,7 @@ $$
 \pi_i = \frac{e^{\eta_i}}{\sum_{l=1}^I e^{\eta_l}}, \qquad \eta = B\phi
 $$
 
-with the identifiability constraint $\sum_k \phi_k = 0$. An $r$th-order
+with the identifiability constraint $\sum_k \phi_k = 0$. An $r$-th order
 discrete difference penalty on the spline coefficients $\phi$ provides
 smoothing. The wide-bin probabilities $\gamma = C\pi$ are linked to
 the observed counts $m$ through a multinomial likelihood. The
