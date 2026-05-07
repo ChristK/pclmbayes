@@ -2,7 +2,7 @@
 
 ## Authors
 
-- **Chris K.**. Author, maintainer.
+- **Chris Kypridemos**. Author, maintainer.
 
 - **Philippe Lambert**. Contributor.  
   Author of the underlying method (Lambert & Eilers, 2009)
