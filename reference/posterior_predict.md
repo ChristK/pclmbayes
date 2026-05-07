@@ -1,12 +1,8 @@
 # Posterior or parametric predictive distribution of fine-cell counts
 
 Generates draws from the posterior or parametric predictive distribution
-of the latent fine-cell (typically single-year) counts. With
-`type = "predictive"` (default), within each wide bin \\j\\ the
-conditional distribution of the fine-cell counts given the band total
-\\m_j\\ is multinomial of size \\m_j\\ with within-band probabilities
-\\\pi_y / \gamma_j\\. With `type = "rate"` the function returns draws of
-the latent smooth rate \\m\_+ \pi\\.
+of the latent fine-cell (typically single-year) counts. Two flavours are
+supported:
 
 ## Usage
 
@@ -14,14 +10,42 @@ the latent smooth rate \\m\_+ \pi\\.
 posterior_predict(fit, ...)
 
 # S3 method for class 'bpclm'
-posterior_predict(fit,
-                  type = c("predictive", "rate"),
-                  level = 0.9, seed = NULL, ...)
+posterior_predict(
+  fit,
+  type = c("predictive", "rate"),
+  level = 0.9,
+  seed = NULL,
+  ...
+)
 
 # S3 method for class 'pclm'
-posterior_predict(fit,
-                  type = c("predictive", "rate"),
-                  level = 0.9, n_draws = 2000L, seed = NULL, ...)
+posterior_predict(
+  fit,
+  type = c("predictive", "rate"),
+  level = 0.9,
+  n_draws = 2000L,
+  seed = NULL,
+  ...
+)
+
+# S3 method for class 'pclm_posterior_predict'
+print(x, n = 6L, ...)
+
+# S3 method for class 'pclm_posterior_predict'
+summary(object, ...)
+
+# S3 method for class 'pclm_posterior_predict'
+plot(
+  x,
+  show_bins = TRUE,
+  xlab = "Fine-grid value",
+  ylab = "Counts per cell",
+  main = NULL,
+  xlim = NULL,
+  ylim = NULL,
+  lwd = 2,
+  ...
+)
 ```
 
 ## Arguments
@@ -30,62 +54,100 @@ posterior_predict(fit,
 
   A fitted `"pclm"`, `"pclm_exact"` or `"bpclm"` object.
 
+- ...:
+
+  Currently unused; for future extension.
+
 - type:
 
-  Either `"predictive"` (the default) or `"rate"`. See Details.
+  Either `"predictive"` (the default) or `"rate"`.
 
 - level:
 
   Credible/prediction level for the returned interval (default 0.9).
 
-- n_draws:
-
-  For frequentist input objects, the number of parametric multinomial
-  draws to generate (default 2000). Ignored for `bpclm` input.
-
 - seed:
 
   Optional integer for reproducibility.
 
-- ...:
+- n_draws:
 
-  Currently unused.
+  For frequentist input objects (`"pclm"`, `"pclm_exact"`), the number
+  of parametric multinomial draws to generate. Ignored for `bpclm`
+  input. Default 2000.
+
+- show_bins:
+
+  Logical: overlay the observed wide-bin histogram on the
+  [`plot()`](https://rdrr.io/r/graphics/plot.default.html) method.
 
 ## Value
 
-An object of class `"pclm_posterior_predict"` – a list with components
-`draws`, `mean`, `median`, `lower`, `upper`, `level`, `type`, `grid`,
-`grid_mid`, `wide_breaks`, `m`.
+An object of class `"pclm_posterior_predict"`: a list with components
+
+- `draws`:
+
+  An `nsim x ngrid` matrix of posterior (or parametric) draws of the
+  per-cell counts.
+
+- `mean, median, lower, upper`:
+
+  Per-cell summaries.
+
+- `level, type`:
+
+  The arguments used.
+
+- `grid, grid_mid`:
+
+  Fine-grid breakpoints and midpoints, copied from the input fit.
+
+- `wide_breaks, m`:
+
+  The wide-bin definitions and observed counts.
 
 ## Details
 
-Two distinct sources of uncertainty exist:
+- `type = "rate"`:
 
-- *Rate uncertainty*: epistemic uncertainty about the smooth underlying
-  rate \\m\_+ \pi\\. Captured by the `bpclm` posterior on \\\pi\\;
-  absent from `pclm` / `pclm_exact` point estimates.
+  The smooth latent rate \\m\_+ \pi\\. For `bpclm` fits this returns a
+  chain of rate draws (one per posterior draw of \\\pi\\). For `pclm`
+  and `pclm_exact` fits this returns the point estimate \\m\_+ \pi\\ (no
+  uncertainty). Mean = posterior mean rate; the credible band is narrow
+  at large \\N\\.
 
-- *Predictive uncertainty*: the multinomial sampling variability of the
-  realised fine-cell counts within each wide bin, conditional on the
-  band total.
+- `type = "predictive"` (default):
 
-For ungrouping use cases (band counts treated as data, fine-cell counts
-as the unknown), `type = "predictive"` is usually the right object,
-since it gives credible intervals that cover the realised counts at the
-nominal level.
+  The actual realised fine-cell counts. Within each wide bin \\j\\, the
+  conditional distribution of the fine-cell counts given the band total
+  \\m_j\\ and the within-band probabilities \\\pi_y/\gamma_j\\ is a
+  multinomial with size \\m_j\\. For `bpclm` this is the full posterior
+  predictive (sample within each posterior draw of \\\pi\\); for `pclm`
+  and `pclm_exact` it is a parametric multinomial bootstrap around the
+  point estimate (`n_draws` samples).
 
-The wide-bin totals are reproduced exactly on every draw under
-`type = "predictive"` (multinomial sampling within each band). Under
-`type = "rate"` they are reproduced exactly only when the input `fit`
-has been calibrated (see
-[`calibrate`](https://christk.github.io/pclmbayes/reference/calibrate.md))
+Both flavours *exactly* preserve the wide-bin totals on every draw under
+`type = "predictive"` (the multinomial draws sum to \\m_j\\ within each
+band by construction). Under `type = "rate"` the totals are preserved
+exactly only when the input fit has been calibrated
+([`calibrate`](https://christk.github.io/pclmbayes/reference/calibrate.md))
 or is a
 [`pclm_exact`](https://christk.github.io/pclmbayes/reference/pclm_exact.md)
 fit.
 
+For an ungrouping use case (band counts \\m_j\\ treated as the data,
+fine-cell counts treated as the unknown), the recommended workflow is
+
+
+      fit <- bpclm(m, wide_breaks, ...)
+      fit <- calibrate(fit)                              # exact band totals
+      pp  <- posterior_predict(fit, type = "predictive") # plausible counts
+
+which gives credible-interval coverage close to nominal for both the
+fine-cell counts and any cumulative sum of them.
+
 ## See also
 
-[`bpclm`](https://christk.github.io/pclmbayes/reference/bpclm.md),
 [`calibrate`](https://christk.github.io/pclmbayes/reference/calibrate.md),
 [`pclm_exact`](https://christk.github.io/pclmbayes/reference/pclm_exact.md).
 
@@ -93,27 +155,15 @@ fit.
 
 ``` r
 # \donttest{
+# Bayesian workflow with exact preservation and uncertainty:
 data(bloodlead)
 fit <- bpclm(m = bloodlead$count,
              wide_breaks = with(bloodlead, cbind(lower, upper)),
              a = 0, b = 80, ngrid = 80, ndx = 17,
              niter = 2000, burnin = 500, adapt = 300, seed = 1)
-fit <- calibrate(fit)
+fit <- calibrate(fit)                                # exact band totals
 pp  <- posterior_predict(fit, type = "predictive")
 plot(pp)
 
-print(pp)
-#> Posterior predictive (multinomial) draws over 80 fine cells
-#> Number of draws: 1500   |  level: 0.9 
-#> Wide bins: 7   |  total counts: 139 
-#> 
-#>  cell grid_mid mean lower upper
-#>     1      0.5 0.19     0     1
-#>     2      1.5 0.24     0     1
-#>     3      2.5 0.34     0     2
-#>     4      3.5 0.41     0     2
-#>     5      4.5 0.57     0     2
-#>     6      5.5 0.74     0     2
-#> ... (74 more cells)
 # }
 ```

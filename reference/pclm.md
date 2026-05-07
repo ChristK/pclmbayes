@@ -1,83 +1,246 @@
 # Frequentist penalised composite link model for grouped data
 
 Fits the model of Lambert and Eilers (2009) by penalised maximum
-likelihood. The smoothing parameter \\\tau\\ is selected by the chosen
-information criterion when a grid of candidates is supplied.
+likelihood. The log of the latent density is modelled as a linear
+combination of B-splines with an \\r\\th-order difference penalty on the
+coefficients. Wide-bin counts `m` are assumed to follow a multinomial
+distribution with probabilities \\\gamma = C \pi(\phi)\\.
 
 ## Usage
 
 ``` r
-pclm(m, wide_breaks,
-     a = NULL, b = NULL,
-     ngrid = 100L,
-     ndx = 17L, degree = 3L,
-     penalty_order = 3L,
-     tau = NULL,
-     select = c("BIC", "AIC"),
-     max_iter = 100L,
-     tol = 1e-7,
-     phi_start = NULL,
-     verbose = FALSE)
+# S3 method for class 'pclm'
+print(x, digits = 4L, ...)
+
+# S3 method for class 'pclm'
+summary(object, probs = c(0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95), ...)
+
+# S3 method for class 'pclm'
+coef(object, ...)
+
+# S3 method for class 'pclm'
+fitted(object, ...)
+
+# S3 method for class 'pclm'
+logLik(object, ...)
+
+# S3 method for class 'pclm'
+plot(
+  x,
+  add = FALSE,
+  density_col = "black",
+  hist_col = grDevices::adjustcolor("grey70", alpha.f = 0.6),
+  hist_border = "grey40",
+  xlab = "y",
+  ylab = "Density",
+  main = "Frequentist PCLM fit",
+  xlim = NULL,
+  ylim = NULL,
+  lwd = 2,
+  ...
+)
+
+# S3 method for class 'pclm'
+predict(object, newdata, ...)
+
+# S3 method for class 'pclm'
+quantile(x, probs = c(0.25, 0.5, 0.75), ...)
+
+pclm(
+  m,
+  wide_breaks,
+  a = NULL,
+  b = NULL,
+  ngrid = 100L,
+  ndx = 17L,
+  degree = 3L,
+  penalty_order = 3L,
+  tau = NULL,
+  select = c("BIC", "AIC"),
+  max_iter = 100L,
+  tol = 1e-07,
+  phi_start = NULL,
+  verbose = FALSE
+)
 ```
 
 ## Arguments
 
+- probs:
+
+  Probabilities at which to compute quantiles.
+
+- add:
+
+  Logical: if `TRUE`, add to an existing plot.
+
+- density_col:
+
+  Colour for the fitted density line.
+
+- hist_col:
+
+  Fill colour for the histogram rectangles.
+
+- hist_border:
+
+  Border colour for histogram rectangles.
+
+- xlab, ylab, main, ylim, xlim, lwd:
+
+  Standard graphical parameters (passed to plotting methods of `pclm` /
+  `bpclm` fits).
+
 - m:
 
-  Numeric vector of non-negative wide-bin counts.
+  Numeric vector of non-negative wide-bin counts (length \\J\\).
 
 - wide_breaks:
 
-  Either a sorted vector of \\J + 1\\ contiguous wide-bin breakpoints or
-  a \\J \times 2\\ matrix/data frame of (lower, upper) limits.
+  Wide-bin boundaries; either a \\J + 1\\ vector (contiguous bins
+  partitioning \\(a, b)\\) or a \\J \times 2\\ matrix/data frame of
+  (lower, upper) limits.
 
 - a, b:
 
-  Lower and upper limits of the support \\(a, b)\\. Defaults to the
-  smallest and largest wide-bin limits.
+  Lower and upper limits of the support \\(a, b)\\ on which to estimate
+  the density. Defaults to the smallest lower limit and largest upper
+  limit of `wide_breaks`.
 
 - ngrid:
 
-  Number of fine-grid intervals \\I\\. Default 100.
+  Number of fine-grid intervals \\I\\. Defaults to 100.
 
 - ndx:
 
   Number of equally-spaced knot intervals on \\(a, b)\\. The number of
-  B-splines is `ndx + degree`. Default 17.
+  B-splines is `ndx + degree`. Default 17 (so \\K = 20\\ cubic
+  B-splines, matching the paper's examples).
 
 - degree:
 
-  B-spline degree. Default 3.
+  B-spline degree (default 3, cubic).
 
 - penalty_order:
 
-  Order of the difference penalty. Default 3.
+  Order \\r\\ of the difference penalty (default 3, as in the paper's
+  examples).
 
 - tau:
 
-  Smoothing parameter; either a scalar or a vector of candidate values.
-  `NULL` (default) uses an internal log-spaced grid of length 25.
+  Either a positive scalar smoothing parameter, or a numeric vector of
+  candidate values to evaluate. If `NULL` (the default), a
+  logarithmically-spaced grid from `1e-2` to `1e6` (length 25) is used.
 
 - select:
 
-  Information criterion: `"BIC"` (default) or `"AIC"`.
+  Information criterion used to pick \\\tau\\ when a grid is provided:
+  either `"BIC"` (default) or `"AIC"`.
 
-- max_iter, tol:
+- max_iter:
 
-  Convergence controls for the penalised scoring algorithm.
+  Maximum number of scoring iterations.
+
+- tol:
+
+  Convergence tolerance on the largest absolute change in \\\phi\\.
 
 - phi_start:
 
-  Optional starting coefficient vector.
+  Optional starting value for \\\phi\\ (length `ndx + degree`). Defaults
+  to the zero vector (uniform density).
 
 - verbose:
 
-  Logical; print iteration progress.
+  Logical: if `TRUE`, print one line per scoring iteration.
 
 ## Value
 
-An object of class `"pclm"`; see
-[`pclmbayes-package`](https://christk.github.io/pclmbayes/reference/pclmbayes-package.md).
+An object of class `"pclm"`, a list with components:
+
+- phi:
+
+  Estimated B-spline coefficients (length \\K\\, summing to 0).
+
+- tau:
+
+  Selected (or supplied) smoothing parameter.
+
+- tau_grid:
+
+  Numeric vector: the full grid of \\\tau\\ values evaluated. `NULL` if
+  a single \\\tau\\ was passed.
+
+- ic:
+
+  Information-criterion value at the selected \\\tau\\.
+
+- ic_grid:
+
+  Vector of IC values at the candidate \\\tau\\ values (`NULL` if a
+  single \\\tau\\).
+
+- select:
+
+  Which IC was used (`"BIC"` or `"AIC"`).
+
+- logL:
+
+  Log-likelihood at convergence.
+
+- edf:
+
+  Effective degrees of freedom, \\\mathrm{tr}((I + \tau P)^{-1} I)\\.
+
+- vcov:
+
+  Estimated variance-covariance matrix of \\\phi\\ (Eq. 3 of the paper).
+
+- pi:
+
+  Latent grid probabilities \\\pi_i\\.
+
+- gamma:
+
+  Fitted wide-bin probabilities \\\gamma_j\\.
+
+- fitted_counts:
+
+  \\m\_+ \gamma\\, the multinomial expectations.
+
+- grid:
+
+  Fine-grid breakpoints (length \\I + 1\\).
+
+- grid_mid:
+
+  Fine-grid midpoints (length \\I\\).
+
+- basis:
+
+  The `"pclm_basis"` object used.
+
+- C:
+
+  The bin matrix \\C\\.
+
+- m, wide_breaks:
+
+  The supplied data.
+
+- call:
+
+  The matched call.
+
+## Details
+
+For a given smoothing parameter \\\tau\\, the fit is obtained by the
+penalised scoring algorithm (Eq. 2 of the paper). When a grid of
+candidate \\\tau\\ values is supplied via `tau` (a numeric vector of
+length \\\> 1\\), the value minimising the chosen information criterion
+(`select = "BIC"`, the default, or `"AIC"`) is selected. The
+variance-covariance matrix of the coefficients is the inverse of the
+penalised Fisher information at convergence (Eq. 3 of the paper).
 
 ## References
 
@@ -86,12 +249,14 @@ link model and penalized likelihood. *Statistical Modelling*, 7(3),
 239–254. (Original frequentist penalised PCLM.)
 
 Lambert, P. and Eilers, P. H. C. (2009). Bayesian density estimation
-from grouped continuous data. *CSDA*, 53(4), 1388–1399. (Section 2, Eq.
-(2): the specific penalised-scoring form implemented here.)
+from grouped continuous data. *Computational Statistics and Data
+Analysis*, 53(4), 1388–1399. (Section 2, Eq. (2): the specific
+penalised-scoring form implemented here.)
 
 ## See also
 
-[`bpclm`](https://christk.github.io/pclmbayes/reference/bpclm.md).
+[`bpclm`](https://christk.github.io/pclmbayes/reference/bpclm.md) for
+the Bayesian variant.
 
 ## Examples
 
@@ -128,5 +293,4 @@ summary(fit)
 #>     45    55   3  1.13
 #>     55    65   0  0.11
 #>     65    80   0  0.01
-plot(fit)
 ```

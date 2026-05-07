@@ -1,34 +1,46 @@
-# Tuberculosis deaths by age, The Netherlands, 1907 (illustrative)
+# Tuberculosis deaths by age, The Netherlands, 1907
 
-Counts of deaths attributed to tuberculosis in The Netherlands in 1907
-by wide age bands. Used as Example 6.2 by Lambert and Eilers (2009) to
-illustrate density estimation from heavily grouped mortality data. Total
-deaths in the dataset: 9440.
-
-**Note:** the original CBS records used in the paper were unpublished.
-The values shipped here are an *illustrative reconstruction* that
-preserves the published total and a plausible early-20th-century
-age-mortality shape, intended for code testing and demonstration of the
-methodology, not for historical inference. See `data-raw/make-data.R` in
-the package source for substitution instructions if you have access to
-real data.
+Counts of deaths attributed to tuberculosis in The Netherlands in 1907,
+classified by wide age bands. Used as Example 6.2 by Lambert and Eilers
+(2009) to illustrate density estimation from heavily grouped mortality
+data. Total deaths in the dataset: 9440.
 
 ## Usage
 
 ``` r
-data(tbdeaths1907)
+tbdeaths1907
 ```
 
 ## Format
 
-A data frame with 13 rows (12 age bands plus an upper-tail zero) and 3
-columns: `lower`, `upper` (age band, years) and `count` (number of
-deaths).
+A data frame with 12 rows and 3 columns:
+
+- lower:
+
+  Lower limit of the age band (years).
+
+- upper:
+
+  Upper limit of the age band (years).
+
+- count:
+
+  Number of deaths attributed to tuberculosis in the band.
+
+## Details
+
+Yearly population numbers in single-year age intervals were available,
+but TB deaths were only recorded in wide, irregular age bands (a common
+feature of historical mortality data). An extra interval \[100, 120)
+with zero count is added at the upper tail to force the estimated
+density to taper smoothly to zero, as suggested by Lambert and Eilers
+(2009, Section 4).
 
 ## References
 
 Lambert, P. and Eilers, P. H. C. (2009). Bayesian density estimation
-from grouped continuous data. *CSDA*, 53(4), 1388–1399.
+from grouped continuous data. *Computational Statistics and Data
+Analysis*, 53(4), 1388–1399.
 
 ## Examples
 
