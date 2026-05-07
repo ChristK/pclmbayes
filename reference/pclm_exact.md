@@ -46,6 +46,16 @@ An object of class `c("pclm_exact", "pclm")`, with components as in
 `lambda` (the converged Lagrange multipliers) and `constraint_residual`
 (max \\\|\gamma - m / m\_+\|\\).
 
+## References
+
+Eilers, P. H. C. (2007). Ill-posed problems with counts, the composite
+link model and penalized likelihood. *Statistical Modelling*, 7(3),
+239–254. (Underlying penalised composite-link model on a fine grid.)
+
+Nocedal, J. and Wright, S. J. (2006). *Numerical Optimization*, 2nd ed.
+Springer. Chapter 18 (Sequential Quadratic Programming, used here to
+enforce the bin-total constraint exactly).
+
 ## See also
 
 [`pclm`](https://christk.github.io/pclmbayes/reference/pclm.md),
@@ -62,5 +72,5 @@ fit <- pclm_exact(m = bloodlead$count,
 fit$constraint_residual
 #> [1] 2.775558e-17
 max(abs(fit$fitted_counts - fit$m))
-#> [1] 7.105427e-15
+#> [1] 3.552714e-15
 ```

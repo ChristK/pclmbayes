@@ -222,7 +222,7 @@ from our chain:</p>
 <span>  lower  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">prob_above_30</span>, <span class="fl">0.05</span>, names <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,</span>
 <span>  upper  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">prob_above_30</span>, <span class="fl">0.95</span>, names <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;      mean     lower     upper </span></span>
-<span><span class="co">#&gt; 0.1495731 0.1067085 0.2005131</span></span>
+<span><span class="co">#&gt; 0.1495729 0.1067085 0.2005136</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fit_b</span>, probs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.20</span>, <span class="fl">0.80</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Bayesian penalised composite link model</span></span>
@@ -245,7 +245,7 @@ from our chain:</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Posterior summaries of quantiles (mean and 90% CI):</span></span>
 <span><span class="co">#&gt;    p    mean      lo      hi</span></span>
-<span><span class="co">#&gt;  0.2 14.9881 13.5971 16.2548</span></span>
+<span><span class="co">#&gt;  0.2 14.9881 13.5972 16.2548</span></span>
 <span><span class="co">#&gt;  0.8 28.0798 26.3564 30.0208</span></span></code></pre></div>
 </div>
 <div class="section level4">
@@ -372,7 +372,7 @@ boundaries.</p>
 <span>  ngrid         <span class="op">=</span> <span class="fl">80L</span>, ndx <span class="op">=</span> <span class="fl">17L</span>, degree <span class="op">=</span> <span class="fl">3L</span>, penalty_order <span class="op">=</span> <span class="fl">3L</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">fit_e</span><span class="op">$</span><span class="va">fitted_counts</span> <span class="op">-</span> <span class="va">fit_e</span><span class="op">$</span><span class="va">m</span><span class="op">)</span><span class="op">)</span>     <span class="co"># ~ 1e-13</span></span>
-<span><span class="co">#&gt; [1] 7.105427e-15</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 3.552714e-15</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level3">
@@ -401,7 +401,7 @@ demography.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">yhat</span> <span class="op">-</span> <span class="va">true_yearly</span><span class="op">)</span> <span class="op">^</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span>         <span class="co"># RMSE per single year</span></span>
 <span><span class="co">#&gt; [1] 18.90452</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">fit_pe</span><span class="op">$</span><span class="va">fitted_counts</span> <span class="op">-</span> <span class="va">m_band</span><span class="op">)</span><span class="op">)</span>      <span class="co"># exact preservation</span></span>
-<span><span class="co">#&gt; [1] 9.094947e-13</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 1.818989e-12</span></span></code></pre></div>
 <p>The RMSE per year sits close to the irreducible
 multinomial-within-band sampling SD
 (<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msqrt><mrow><msub><mi>n</mi><mi>j</mi></msub><mi>/</mi><mn>6</mn></mrow></msqrt><mo>≈</mo><mn>20</mn></mrow><annotation encoding="application/x-tex">\sqrt{n_j / 6} \approx 20</annotation></semantics></math>
