@@ -166,9 +166,9 @@ results <- data.frame(
 results
 #>           algorithm RMSE_yearly max_bin_residual elapsed_sec
 #> 1              pclm    44.79191     7.537445e+01       0.021
-#> 2 bpclm + calibrate    34.84219     4.547474e-13       0.311
-#> 3        pclm_exact    27.36794     1.818989e-12       0.027
-#> 4     ungroup::pclm    78.29337     1.392698e+00       0.114
+#> 2 bpclm + calibrate    34.84219     4.547474e-13       0.306
+#> 3        pclm_exact    27.36794     1.818989e-12       0.026
+#> 4     ungroup::pclm    78.29337     1.392698e+00       0.113
 ```
 
 The expected pattern:
@@ -193,7 +193,10 @@ The expected pattern:
 
 ``` r
 
+ymax_s <- max(true_yearly, yhat_exact, yhat_pclm, yhat_bpclm,
+              if (have_ungroup) ung_yearly)
 plot(ages, true_yearly, type = "h", col = "grey70",
+     ylim = c(0, ymax_s),
      xlab = "Age (years)", ylab = "Deaths",
      main = "Recovered single-year counts")
 lines(ages, yhat_exact, col = "black",     lwd = 2)
@@ -298,8 +301,11 @@ ung_density_b <- as.numeric(fit_b_ung$fitted) / sum(fit_b_ung$fitted)
 ``` r
 
 mids_b <- (head(fit_b_pclm$grid, -1L) + tail(fit_b_pclm$grid, -1L)) / 2
+ymax_b <- max(fit_b_pclm$pi, fit_b_exact$pi, fit_b_bayes$pi,
+              if (have_ungroup) ung_density_b)
 plot(mids_b, fit_b_pclm$pi,  type = "l", lwd = 2, lty = 2,
      col = "steelblue",
+     ylim = c(0, ymax_b),
      xlab = "Blood-lead concentration (µg/dl)",
      ylab = "Density mass per fine cell",
      main = "bloodlead: density estimates")
@@ -406,8 +412,11 @@ ung_density_t <- as.numeric(fit_t_ung$fitted) / sum(fit_t_ung$fitted)
 ``` r
 
 mids_t <- (head(fit_t_pclm$grid, -1L) + tail(fit_t_pclm$grid, -1L)) / 2
+ymax_t <- max(fit_t_pclm$pi, fit_t_exact$pi, fit_t_bayes$pi,
+              if (have_ungroup) ung_density_t)
 plot(mids_t, fit_t_pclm$pi,  type = "l", lwd = 2, lty = 2,
      col = "steelblue",
+     ylim = c(0, ymax_t),
      xlab = "Age (years)",
      ylab = "Density mass per single year",
      main = "tbdeaths1907: density estimates")

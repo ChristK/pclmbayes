@@ -420,7 +420,9 @@ true_yearly, col = “firebrick”, lwd = 1.5, lty = 2) par(op)
     cdf_lo    <- apply(cdf_chain, 2L, quantile, probs = 0.05, names = FALSE)
     cdf_hi    <- apply(cdf_chain, 2L, quantile, probs = 0.95, names = FALSE)
 
+    ymax_cdf <- max(cumsum(true_yearly), cdf_hi)
     plot(ages, cumsum(true_yearly), type = "l", col = "grey40", lwd = 2,
+         ylim = c(0, ymax_cdf),
          xlab = "Age (years)", ylab = "Cumulative deaths",
          main = "Cumulative deaths: truth + 90% predictive band")
     polygon(c(ages, rev(ages)), c(cdf_lo, rev(cdf_hi)),
