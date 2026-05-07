@@ -185,8 +185,14 @@ calibrate.bpclm <- function(fit, ...) {
 #'   \code{constraint_residual} (max |γ - m/m_+|).
 #'
 #' @references
+#' Eilers, P. H. C. (2007). Ill-posed problems with counts, the
+#' composite link model and penalized likelihood. \emph{Statistical
+#' Modelling}, 7(3), 239--254. (Underlying penalised composite-link
+#' model on a fine grid.)
+#'
 #' Nocedal, J. and Wright, S. J. (2006). \emph{Numerical Optimization},
-#' 2nd ed. Springer.  Chapter 18 (Sequential Quadratic Programming).
+#' 2nd ed. Springer.  Chapter 18 (Sequential Quadratic Programming, used
+#' here to enforce the bin-total constraint exactly).
 #'
 #' @examples
 #' data(bloodlead)

@@ -62,8 +62,14 @@ summary(fit)
 plot(fit)
 }
 \references{
+Eilers, P. H. C. (2007). Ill-posed problems with counts, the
+composite link model and penalized likelihood. \emph{Statistical
+Modelling}, 7(3), 239--254. (Original frequentist penalised PCLM.)
+
 Lambert, P. and Eilers, P. H. C. (2009). Bayesian density estimation
 from grouped continuous data. \emph{CSDA}, 53(4), 1388--1399.
+(Section 2, Eq. (2): the specific penalised-scoring form implemented
+here.)
 }
 \seealso{
 \code{\link{bpclm}}.
