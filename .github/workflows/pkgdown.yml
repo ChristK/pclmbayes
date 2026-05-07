@@ -1,0 +1,68 @@
+# =============================================================================
+# pkgdown Workflow for pclmbayes
+# =============================================================================
+#
+# Builds the pkgdown documentation site (function reference + vignettes +
+# README) and deploys it to the gh-pages branch, which GitHub Pages then
+# serves at https://christk.github.io/pclmbayes/.
+#
+# Triggers:
+# - Push to main / master  -> rebuild + deploy
+# - Pull requests          -> build only (no deploy), so PRs catch breakage
+# - Releases (published)   -> rebuild + deploy (versioned site if configured)
+# - Manual workflow_dispatch
+#
+# One-time setup required after the first successful run:
+#   Repo Settings -> Pages -> Source: "Deploy from a branch" -> gh-pages / (root)
+# =============================================================================
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+name: pkgdown
+
+concurrency:
+  group: pkgdown-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  pkgdown:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Pandoc
+        uses: r-lib/actions/setup-pandoc@v2
+
+      - name: Setup R
+        uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+
+      - name: Setup R dependencies
+        uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: any::pkgdown, local::.
+          needs: website
+
+      - name: Build site
+        run: pkgdown::build_site_github_pages(new_process = FALSE, install = FALSE)
+        shell: Rscript {0}
+
+      - name: Deploy to GitHub Pages
+        if: github.event_name != 'pull_request'
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          clean: false
+          branch: gh-pages
+          folder: docs

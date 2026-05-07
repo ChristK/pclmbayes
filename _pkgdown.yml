@@ -1,0 +1,31 @@
+url: https://christk.github.io/pclmbayes/
+
+template:
+  bootstrap: 5
+
+reference:
+  - title: Package overview
+    contents:
+      - pclmbayes
+  - title: Frequentist fit
+    contents:
+      - pclm
+      - pclm_exact
+  - title: Bayesian fit
+    contents:
+      - bpclm
+      - posterior_predict
+      - calibrate
+  - title: Building blocks
+    contents:
+      - bspline_basis
+      - bin_matrix
+      - diff_penalty
+      - latent_density
+  - title: Shape constraints
+    contents:
+      - is_unimodal
+  - title: Datasets
+    contents:
+      - bloodlead
+      - tbdeaths1907
