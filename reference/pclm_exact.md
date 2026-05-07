@@ -62,5 +62,5 @@ fit <- pclm_exact(m = bloodlead$count,
 fit$constraint_residual
 #> [1] 2.775558e-17
 max(abs(fit$fitted_counts - fit$m))
-#> [1] 3.552714e-15
+#> [1] 7.105427e-15
 ```
