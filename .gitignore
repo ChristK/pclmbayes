@@ -28,6 +28,9 @@ Thumbs.db
 *~
 *.swp
 
+# Claude Code local settings
+.claude/
+
 # Test artefacts (we keep .png/.csv outputs since they ARE the validation
 # evidence; only ignore intermediate vignette outputs)
 tests/vignette-output.md
