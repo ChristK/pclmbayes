@@ -50,6 +50,7 @@
 # Methods for "pclm"
 # -----------------------------------------------------------------------------
 
+#' @rdname pclm
 #' @export
 print.pclm <- function(x, digits = 4L, ...) {
   cat("Penalised composite link model (frequentist)\n")
@@ -68,6 +69,7 @@ print.pclm <- function(x, digits = 4L, ...) {
   invisible(x)
 }
 
+#' @rdname pclm
 #' @export
 summary.pclm <- function(object, probs = c(0.05, 0.10, 0.25, 0.50,
                                            0.75, 0.90, 0.95), ...) {
@@ -87,12 +89,15 @@ summary.pclm <- function(object, probs = c(0.05, 0.10, 0.25, 0.50,
   invisible(object)
 }
 
+#' @rdname pclm
 #' @export
 coef.pclm <- function(object, ...) object$phi
 
+#' @rdname pclm
 #' @export
 fitted.pclm <- function(object, ...) object$fitted_counts
 
+#' @rdname pclm
 #' @export
 logLik.pclm <- function(object, ...) {
   structure(object$logL,
@@ -101,21 +106,13 @@ logLik.pclm <- function(object, ...) {
             class = "logLik")
 }
 
-#' Plot a frequentist PCLM fit
-#'
-#' Draws the histogram of wide-bin densities together with the fitted
-#' latent density on the fine grid.
-#'
-#' @param x A \code{"pclm"} object.
 #' @param add Logical: if \code{TRUE}, add to an existing plot.
 #' @param density_col Colour for the fitted density line.
 #' @param hist_col Fill colour for the histogram rectangles.
 #' @param hist_border Border colour for histogram rectangles.
-#' @param xlab,ylab,main,ylim,xlim,lwd,... Standard graphical
-#'   parameters.
-#'
-#' @return Invisibly, the data underlying the plot (a list with
-#'   components \code{x} = grid midpoints and \code{y} = density).
+#' @param xlab,ylab,main,ylim,xlim,lwd Standard graphical parameters
+#'   (passed to plotting methods of \code{pclm} / \code{bpclm} fits).
+#' @rdname pclm
 #' @export
 plot.pclm <- function(x,
                       add = FALSE,
@@ -148,6 +145,7 @@ plot.pclm <- function(x,
   invisible(list(x = mids, y = dens))
 }
 
+#' @rdname pclm
 #' @export
 predict.pclm <- function(object, newdata, ...) {
   if (missing(newdata)) {
@@ -160,15 +158,8 @@ predict.pclm <- function(object, newdata, ...) {
   }
 }
 
-#' Quantile method for PCLM fits
-#'
-#' Inverts the latent CDF on the fine grid by linear interpolation and
-#' returns the requested quantiles.
-#'
-#' @param x A \code{"pclm"} object.
 #' @param probs Probabilities at which to compute quantiles.
-#' @param ... Ignored.
-#' @return Numeric vector of quantiles (named by \code{probs}).
+#' @rdname pclm
 #' @export
 quantile.pclm <- function(x, probs = c(0.25, 0.5, 0.75), ...) {
   q <- .quantile_from_pi(probs, x$pi, x$grid)
@@ -179,6 +170,7 @@ quantile.pclm <- function(x, probs = c(0.25, 0.5, 0.75), ...) {
 # Methods for "bpclm"
 # -----------------------------------------------------------------------------
 
+#' @rdname bpclm
 #' @export
 print.bpclm <- function(x, digits = 4L, ...) {
   cat("Bayesian penalised composite link model\n")
@@ -201,6 +193,7 @@ print.bpclm <- function(x, digits = 4L, ...) {
   invisible(x)
 }
 
+#' @rdname bpclm
 #' @export
 summary.bpclm <- function(object,
                           probs = c(0.05, 0.10, 0.25, 0.50,
@@ -240,9 +233,11 @@ summary.bpclm <- function(object,
   invisible(list(mu = mu_summ, sd = sd_summ, quantiles = qtab))
 }
 
+#' @rdname bpclm
 #' @export
 coef.bpclm <- function(object, ...) object$phi
 
+#' @rdname bpclm
 #' @export
 fitted.bpclm <- function(object, ...) {
   # Fitted bin counts under posterior mean of pi
@@ -250,18 +245,11 @@ fitted.bpclm <- function(object, ...) {
   sum(object$m) * ga
 }
 
-#' Plot a Bayesian PCLM fit
-#'
-#' Histogram of wide-bin densities, the posterior mean of the latent
-#' density, and a pointwise credible band.
-#'
-#' @inheritParams plot.pclm
-#' @param x A \code{"bpclm"} object.
 #' @param band_col Fill colour for the credible band (alpha-blended).
 #' @param cred Credible level for the band (default
-#'   \code{x$cred_level}).
-#' @return Invisibly, a list with components \code{x}, \code{y},
-#'   \code{lower}, \code{upper}.
+#'   \code{x$cred_level}). For \code{quantile.bpclm}, also reports
+#'   lower/upper credible limits when \code{summary = "mean"}.
+#' @rdname bpclm
 #' @export
 plot.bpclm <- function(x,
                        add = FALSE,
@@ -312,6 +300,7 @@ plot.bpclm <- function(x,
   invisible(list(x = mids, y = dens, lower = lo, upper = hi))
 }
 
+#' @rdname bpclm
 #' @export
 predict.bpclm <- function(object, newdata,
                           summary = c("mean", "median", "sample"),
@@ -346,24 +335,10 @@ predict.bpclm <- function(object, newdata,
   .density_at(x, object$grid_mid, object$pi, object$grid)
 }
 
-#' Quantile method for Bayesian PCLM fits
-#'
-#' Returns posterior summaries of any quantile of the latent
-#' distribution. The quantile of the posterior-mean density is returned
-#' if \code{summary = "mean"}; with \code{summary = "sample"} the full
-#' posterior sample of quantile values is returned.
-#'
-#' @param x A \code{"bpclm"} object.
-#' @param probs Probabilities at which to compute quantiles.
-#' @param summary One of \code{"mean"} (posterior mean of the quantile),
-#'   \code{"median"}, or \code{"sample"} (returns the full posterior
-#'   sample as a matrix).
-#' @param cred Credible level (default \code{x$cred_level}). When
-#'   \code{summary = "mean"}, also reports lower/upper credible limits.
-#' @param ... Ignored.
-#' @return If \code{summary = "sample"}: a \code{nsim x length(probs)}
-#'   matrix. Otherwise a \code{length(probs) x 4} data frame with
-#'   columns \code{p}, \code{estimate}, \code{lower}, \code{upper}.
+#' @param summary One of \code{"mean"} (posterior mean of the quantile
+#'   or predicted density), \code{"median"}, or \code{"sample"}
+#'   (returns the full posterior sample as a matrix).
+#' @rdname bpclm
 #' @export
 quantile.bpclm <- function(x,
                            probs = c(0.25, 0.5, 0.75),

@@ -108,6 +108,8 @@
 #' }
 #'
 #' @seealso \code{\link{calibrate}}, \code{\link{pclm_exact}}.
+#' @name posterior_predict
+#' @rdname posterior_predict
 #' @export
 posterior_predict <- function(fit, ...) UseMethod("posterior_predict")
 
@@ -223,6 +225,7 @@ posterior_predict.pclm <- function(fit,
 }
 
 
+#' @rdname posterior_predict
 #' @export
 print.pclm_posterior_predict <- function(x, n = 6L, ...) {
   cat("Posterior",
@@ -244,6 +247,7 @@ print.pclm_posterior_predict <- function(x, n = 6L, ...) {
 }
 
 
+#' @rdname posterior_predict
 #' @export
 summary.pclm_posterior_predict <- function(object, ...) {
   cat("Posterior",
@@ -282,17 +286,9 @@ summary.pclm_posterior_predict <- function(object, ...) {
 }
 
 
-#' Plot a posterior_predict object
-#'
-#' Draws the posterior predictive (or rate) mean and credible/prediction
-#' band over the fine grid, optionally with the observed wide-bin
-#' histogram overlaid.
-#'
-#' @param x A \code{"pclm_posterior_predict"} object.
-#' @param type For backwards compatibility; ignored.
-#' @param show_bins Logical: overlay the observed wide-bin histogram.
-#' @param xlab,ylab,main,xlim,ylim,lwd,... Graphical parameters.
-#' @return Invisibly, the plot data.
+#' @param show_bins Logical: overlay the observed wide-bin histogram on
+#'   the \code{plot()} method.
+#' @rdname posterior_predict
 #' @export
 plot.pclm_posterior_predict <- function(x,
                                         show_bins = TRUE,

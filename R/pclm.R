@@ -107,6 +107,8 @@
 #'             penalty_order = 3)
 #' summary(fit)
 #'
+#' @name pclm
+#' @rdname pclm
 #' @export
 pclm <- function(m, wide_breaks,
                  a = NULL, b = NULL,

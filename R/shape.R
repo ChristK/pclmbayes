@@ -12,23 +12,42 @@
 # that sense "soft" with respect to phi.
 # =============================================================================
 
-#' Check whether a discrete density is unimodal
+#' Shape predicates for discrete densities
 #'
-#' Returns \code{TRUE} when the vector \code{pi} (a discrete latent
-#' density on a fine grid) is unimodal, i.e. it is non-decreasing up to
-#' some index and non-increasing thereafter (a flat plateau is
-#' permitted). A small numerical tolerance is allowed.
+#' Predicates that check whether a discrete latent density \code{pi}
+#' (typically a fine-grid probability vector from a PCLM fit) satisfies
+#' a particular shape constraint:
+#'
+#' \describe{
+#'   \item{\code{is_unimodal}}{Non-decreasing up to some index and
+#'     non-increasing thereafter (a flat plateau is permitted).}
+#'   \item{\code{is_logconcave}}{
+#'     \eqn{\log \pi_{i-1} + \log \pi_{i+1} \le 2 \log \pi_i} at every
+#'     interior index. Bins with zero probability are allowed provided
+#'     they are not interior to a strictly positive segment.}
+#'   \item{\code{is_monotonic}}{Non-decreasing or non-increasing across
+#'     the whole support, possibly restricted to one direction.}
+#' }
+#'
+#' Each predicate uses a small numerical tolerance to absorb
+#' floating-point noise. They are used internally by \code{\link{bpclm}}
+#' to enforce shape priors via rejection.
 #'
 #' @param pi Numeric vector of fine-grid probabilities (length \eqn{I}).
-#' @param tol Tolerance for "non-decrease" / "non-increase" comparisons
-#'   (default \code{1e-12}). Allows floating-point wobble.
+#' @param tol Numerical tolerance for the inequality comparisons.
+#' @param direction For \code{is_monotonic}: either \code{"either"} (the
+#'   default), \code{"increasing"}, or \code{"decreasing"}.
 #'
 #' @return Logical scalar.
 #'
 #' @examples
 #' is_unimodal(c(0.1, 0.2, 0.4, 0.2, 0.1))   # TRUE
 #' is_unimodal(c(0.1, 0.4, 0.2, 0.4, 0.1))   # FALSE (bimodal)
+#' is_logconcave(dnorm(seq(-3, 3, length.out = 31)))            # TRUE
+#' is_monotonic(c(0.5, 0.3, 0.1), direction = "decreasing")     # TRUE
 #'
+#' @name shape-constraints
+#' @rdname shape-constraints
 #' @export
 is_unimodal <- function(pi, tol = 1e-12) {
   pi <- as.numeric(pi)
@@ -46,20 +65,7 @@ is_unimodal <- function(pi, tol = 1e-12) {
   FALSE
 }
 
-#' Check whether a discrete density is log-concave
-#'
-#' A discrete density \code{pi} is log-concave when
-#' \eqn{\log \pi_{i-1} + \log \pi_{i+1} \le 2 \log \pi_i} for all
-#' interior indices \eqn{i}. Bins with zero probability are allowed
-#' provided they are not interior to a strictly positive segment (which
-#' would violate log-concavity by sending the second log-difference to
-#' \eqn{-\infty} on one side and \eqn{+\infty} on the other).
-#'
-#' @param pi Numeric vector of fine-grid probabilities.
-#' @param tol Numerical tolerance.
-#'
-#' @return Logical scalar.
-#'
+#' @rdname shape-constraints
 #' @export
 is_logconcave <- function(pi, tol = 1e-10) {
   pi <- as.numeric(pi)
@@ -72,19 +78,7 @@ is_logconcave <- function(pi, tol = 1e-10) {
   all(d2 <= tol)
 }
 
-#' Check whether a discrete density is monotonic
-#'
-#' Returns \code{TRUE} if \code{pi} is non-decreasing or non-increasing
-#' (within \code{tol}). Useful to enforce, e.g., a strictly decreasing
-#' density on a positive support.
-#'
-#' @param pi Numeric vector.
-#' @param direction Either \code{"either"} (default), \code{"increasing"}
-#'   or \code{"decreasing"}.
-#' @param tol Numerical tolerance.
-#'
-#' @return Logical scalar.
-#'
+#' @rdname shape-constraints
 #' @export
 is_monotonic <- function(pi,
                          direction = c("either", "increasing", "decreasing"),

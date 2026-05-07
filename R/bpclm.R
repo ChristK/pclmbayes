@@ -133,6 +133,8 @@
 #' summary(fit)
 #' }
 #'
+#' @name bpclm
+#' @rdname bpclm
 #' @export
 bpclm <- function(m, wide_breaks,
                   a = NULL, b = NULL,
