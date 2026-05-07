@@ -4,7 +4,7 @@ Title: Bayesian Density Estimation from Grouped Continuous Data via the
     Penalised Composite Link Model
 Version: 0.1.0
 Authors@R: c(
-    person("Chris", "K.",
+    person("Chris", "Kypridemos",
            email = "christodoulosk@gmail.com",
            role = c("aut", "cre")),
     person("Philippe", "Lambert",
