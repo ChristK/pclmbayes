@@ -261,7 +261,7 @@ max(abs(fit_pe$fitted_counts - m_band))      # exact preservation
 The RMSE per year sits close to the irreducible
 multinomial-within-band sampling SD ($\sqrt{n_j / 6} \approx 20$ for
 a 2500-death band). See the validation script in
-`tests/validate-ungrouping.R` for a Monte Carlo coverage check.
+`dev/validate-ungrouping.R` for a Monte Carlo coverage check.
 
 # Part 3 — Uncertainty for ungrouping (`posterior_predict()`)
 

@@ -1,7 +1,7 @@
 # =============================================================================
 # Performance evaluation on synthetic data.
 # Run from the package root with:
-#   Rscript tests/synthetic-eval.R
+#   Rscript dev/synthetic-eval.R
 #
 # Four scenarios:
 #   (S1) Unimodal Gamma(5, 1), equal-width bins (width = 0.5*sigma).
@@ -21,8 +21,8 @@
 #   * coverage indicator for the 90% credible interval of mean(Y) and sd(Y)
 #
 # Output:
-#   tests/synthetic_eval.png      -- 2x2 panel of true vs fitted densities
-#   tests/synthetic_eval.csv      -- numerical summary table
+#   dev/synthetic_eval.png      -- 2x2 panel of true vs fitted densities
+#   dev/synthetic_eval.csv      -- numerical summary table
 # =============================================================================
 
 # ---- locate package root ----

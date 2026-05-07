@@ -1,7 +1,7 @@
 # =============================================================================
 # Manual verification script.
 # Run from the package root with:
-#   Rscript tests/manual-verify.R
+#   Rscript dev/manual-verify.R
 #
 # Verifies that:
 #   1. The B-spline basis is a partition of unity.
