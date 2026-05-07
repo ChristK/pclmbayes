@@ -38,6 +38,21 @@ The package provides:
 
 ## Installation
 
+### From GitHub (recommended)
+
+```r
+# install.packages("remotes")
+remotes::install_github("ChristK/pclmbayes")
+
+# To also build the vignettes locally:
+remotes::install_github("ChristK/pclmbayes", build_vignettes = TRUE)
+```
+
+A specific branch, tag, or commit can be installed with the `ref`
+argument, e.g. `remotes::install_github("ChristK/pclmbayes", ref = "main")`.
+
+### From a local clone
+
 The package source is self-contained: the `.rda` data files and the
 `man/` documentation files are bundled, so no roxygen2 round-trip is
 required to install. From the directory containing the package:
