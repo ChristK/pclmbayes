@@ -204,7 +204,10 @@ The expected pattern:
 ## Plot the four point estimates
 
 ```{r synth-plot, fig.cap = "Single-year fits from the four algorithms vs. the simulated truth."}
+ymax_s <- max(true_yearly, yhat_exact, yhat_pclm, yhat_bpclm,
+              if (have_ungroup) ung_yearly)
 plot(ages, true_yearly, type = "h", col = "grey70",
+     ylim = c(0, ymax_s),
      xlab = "Age (years)", ylab = "Deaths",
      main = "Recovered single-year counts")
 lines(ages, yhat_exact, col = "black",     lwd = 2)
@@ -286,8 +289,11 @@ ung_density_b <- as.numeric(fit_b_ung$fitted) / sum(fit_b_ung$fitted)
 
 ```{r blood-plot, fig.cap = "Recovered density on the bloodlead data, from all four algorithms."}
 mids_b <- (head(fit_b_pclm$grid, -1L) + tail(fit_b_pclm$grid, -1L)) / 2
+ymax_b <- max(fit_b_pclm$pi, fit_b_exact$pi, fit_b_bayes$pi,
+              if (have_ungroup) ung_density_b)
 plot(mids_b, fit_b_pclm$pi,  type = "l", lwd = 2, lty = 2,
      col = "steelblue",
+     ylim = c(0, ymax_b),
      xlab = "Blood-lead concentration (µg/dl)",
      ylab = "Density mass per fine cell",
      main = "bloodlead: density estimates")
@@ -374,8 +380,11 @@ ung_density_t <- as.numeric(fit_t_ung$fitted) / sum(fit_t_ung$fitted)
 
 ```{r tb-plot, fig.cap = "Recovered age-at-death density on tbdeaths1907."}
 mids_t <- (head(fit_t_pclm$grid, -1L) + tail(fit_t_pclm$grid, -1L)) / 2
+ymax_t <- max(fit_t_pclm$pi, fit_t_exact$pi, fit_t_bayes$pi,
+              if (have_ungroup) ung_density_t)
 plot(mids_t, fit_t_pclm$pi,  type = "l", lwd = 2, lty = 2,
      col = "steelblue",
+     ylim = c(0, ymax_t),
      xlab = "Age (years)",
      ylab = "Density mass per single year",
      main = "tbdeaths1907: density estimates")
