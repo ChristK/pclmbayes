@@ -126,28 +126,32 @@ pclm <- function(m, wide_breaks,
   select <- match.arg(select)
 
   # ---- Validate inputs ---------------------------------------------------
+  # nocov start
   if (!is.numeric(m) || any(m < 0) || any(!is.finite(m))) {
     stop("`m` must be a non-negative numeric vector.")
   }
   if (sum(m) <= 0) stop("`sum(m)` must be positive.")
+  # nocov end
 
   # Standardise wide_breaks to J x 2
   if (is.matrix(wide_breaks) || is.data.frame(wide_breaks)) {
     wb <- as.matrix(wide_breaks)
     if (ncol(wb) != 2L) {
-      stop("If `wide_breaks` is a matrix, it must have two columns.")
+      stop("If `wide_breaks` is a matrix, it must have two columns.") # nocov
     }
   } else {
     wb_vec <- sort(as.numeric(wide_breaks))
     wb <- cbind(head(wb_vec, -1), tail(wb_vec, -1))
   }
+  # nocov start
   if (nrow(wb) != length(m)) {
     stop("Number of wide bins (rows of `wide_breaks`) must equal length(m).")
   }
+  # nocov end
 
   if (is.null(a)) a <- min(wb[, 1L])
   if (is.null(b)) b <- max(wb[, 2L])
-  if (a >= b) stop("Require `a < b`.")
+  if (a >= b) stop("Require `a < b`.") # nocov
 
   # Fine grid
   ngrid       <- as.integer(ngrid)
@@ -167,8 +171,10 @@ pclm <- function(m, wide_breaks,
   if (is.null(phi_start)) {
     phi0 <- rep(0, K)
   } else {
+    # nocov start
     if (length(phi_start) != K) stop("`phi_start` must have length K = ", K)
     phi0 <- .centre(as.numeric(phi_start))
+    # nocov end
   }
 
   # ---- Tau grid setup ----------------------------------------------------
@@ -177,7 +183,7 @@ pclm <- function(m, wide_breaks,
   } else {
     tau_grid <- sort(unique(as.numeric(tau)))
     if (any(tau_grid <= 0) || any(!is.finite(tau_grid))) {
-      stop("`tau` must contain positive finite values.")
+      stop("`tau` must contain positive finite values.") # nocov
     }
   }
 

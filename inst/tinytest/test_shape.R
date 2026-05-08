@@ -21,3 +21,12 @@ expect_true (is_monotonic(c(0.5, 0.3, 0.1), direction = "decreasing"))
 expect_false(is_monotonic(c(0.5, 0.3, 0.1), direction = "increasing"))
 expect_true (is_monotonic(c(0.1, 0.3, 0.5), direction = "increasing"))
 expect_false(is_monotonic(c(0.1, 0.4, 0.2)))
+
+# Short-vector early-return branches
+expect_true(is_unimodal(c(0.5)))           # length < 3
+expect_true(is_unimodal(c(0.4, 0.6)))      # length < 3
+expect_true(is_logconcave(c(0.5)))         # length < 3
+expect_true(is_logconcave(c(0.4, 0.6)))    # length < 3
+expect_true(is_monotonic(c(0.5)))          # length < 2
+# is_logconcave returns FALSE on negative entries
+expect_false(is_logconcave(c(0.1, -0.2, 0.3)))

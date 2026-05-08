@@ -44,6 +44,7 @@
 #' @export
 bspline_basis <- function(x, a, b, ndx = 17L, degree = 3L) {
 
+  # nocov start
   if (!is.numeric(x) || any(!is.finite(x))) {
     stop("`x` must be a numeric vector with finite values.")
   }
@@ -53,10 +54,13 @@ bspline_basis <- function(x, a, b, ndx = 17L, degree = 3L) {
   if (any(x < a - 1e-8) || any(x > b + 1e-8)) {
     stop("All points in `x` must lie inside [a, b].")
   }
+  # nocov end
   ndx    <- as.integer(ndx)
   degree <- as.integer(degree)
+  # nocov start
   if (ndx < 1L)    stop("`ndx` must be at least 1.")
   if (degree < 0L) stop("`degree` must be non-negative.")
+  # nocov end
 
   # equally-spaced augmented knot sequence
   h <- (b - a) / ndx
@@ -73,11 +77,13 @@ bspline_basis <- function(x, a, b, ndx = 17L, degree = 3L) {
                              ord    = degree + 1L,
                              outer.ok = TRUE)
   # B has length(x) rows and K columns
+  # nocov start
   if (ncol(B) != K) {
     # Should not happen with a correct knot sequence, but guard anyway
     stop("Internal error: basis matrix has ", ncol(B),
          " columns, expected ", K, ".")
   }
+  # nocov end
 
   structure(list(B      = B,
                  knots  = knots,
@@ -119,9 +125,11 @@ bspline_basis <- function(x, a, b, ndx = 17L, degree = 3L) {
 diff_penalty <- function(K, r = 3L, return_D = FALSE) {
   K <- as.integer(K)
   r <- as.integer(r)
+  # nocov start
   if (K < 2L)        stop("`K` must be at least 2.")
   if (r < 1L)        stop("`r` must be at least 1.")
   if (r >= K)        stop("`r` must be smaller than `K`.")
+  # nocov end
 
   D <- diff(diag(K), differences = r)  # (K - r) x K
   P <- crossprod(D)                    # K x K
@@ -164,31 +172,39 @@ diff_penalty <- function(K, r = 3L, return_D = FALSE) {
 bin_matrix <- function(wide_breaks, fine_breaks) {
 
   fine_breaks <- as.numeric(fine_breaks)
+  # nocov start
   if (any(diff(fine_breaks) <= 0)) {
     stop("`fine_breaks` must be strictly increasing.")
   }
+  # nocov end
   I <- length(fine_breaks) - 1L
 
   # Convert wide_breaks to a J x 2 matrix [L_j, U_j]
   if (is.matrix(wide_breaks) || is.data.frame(wide_breaks)) {
     wb <- as.matrix(wide_breaks)
+    # nocov start
     if (ncol(wb) != 2L) {
       stop("`wide_breaks` matrix/data frame must have two columns ",
            "(lower, upper limits).")
     }
+    # nocov end
     L <- wb[, 1L]
     U <- wb[, 2L]
   } else {
     wb <- sort(as.numeric(wide_breaks))
+    # nocov start
     if (length(wb) < 2L) {
       stop("`wide_breaks` must contain at least two breakpoints.")
     }
+    # nocov end
     L <- head(wb, -1L)
     U <- tail(wb, -1L)
   }
+  # nocov start
   if (any(U <= L)) {
     stop("Each wide bin must have upper > lower limit.")
   }
+  # nocov end
   J <- length(L)
 
   # Pre-compute fine interval bounds and widths

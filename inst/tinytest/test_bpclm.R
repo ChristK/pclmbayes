@@ -40,3 +40,29 @@ fit <- bpclm(m = bloodlead$count,
              shape = "unimodal", seed = 7)
 uni_flags <- apply(fit$pi_chain, 1L, is_unimodal)
 expect_true(all(uni_flags))
+
+# bpclm with shape = 'logconcave' produces only log-concave draws
+fit_lc <- bpclm(m = bloodlead$count,
+                wide_breaks = with(bloodlead, cbind(lower, upper)),
+                a = 0, b = 80, ngrid = 60,
+                ndx = 13L, degree = 3L, penalty_order = 3L,
+                niter = 400L, burnin = 100L, adapt = 150L,
+                shape = "logconcave", seed = 8)
+lc_flags <- apply(fit_lc$pi_chain, 1L, is_logconcave)
+expect_true(all(lc_flags))
+
+# bpclm with shape = 'monotonic' (decreasing) on monotonic data
+set.seed(99)
+y_dec <- rexp(800, rate = 0.5)
+brk_dec <- c(0, 1, 2, 3, 4, 6, 8, 12)
+m_dec   <- as.numeric(table(cut(y_dec, brk_dec, include.lowest = TRUE)))
+fit_mn  <- bpclm(m = m_dec, wide_breaks = brk_dec,
+                 a = 0, b = 12, ngrid = 50,
+                 ndx = 11L, degree = 3L, penalty_order = 3L,
+                 niter = 400L, burnin = 100L, adapt = 150L,
+                 shape = "monotonic",
+                 shape_args = list(direction = "decreasing"),
+                 seed = 21)
+mn_flags <- apply(fit_mn$pi_chain, 1L,
+                  function(p) is_monotonic(p, direction = "decreasing"))
+expect_true(all(mn_flags))
