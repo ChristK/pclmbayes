@@ -260,10 +260,12 @@ pclm <- function(m, wide_breaks,
 
   for (it in seq_len(max_iter)) {
     ev <- .pclm_eval(phi, B = B, C = C, m = m, compute_FI = TRUE)
+    # nocov start
     if (!is.finite(ev$logL)) {
       stop("Non-finite log-likelihood at iteration ", it,
            "; consider increasing tau or refining the grid.")
     }
+    # nocov end
     H   <- ev$FI + tau * P + eps_ridge * diag(K)
     rhs <- ev$grad - tau * (P %*% phi)
     step <- tryCatch(as.numeric(solve(H, rhs)),
