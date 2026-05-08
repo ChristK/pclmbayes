@@ -254,6 +254,24 @@ Defaults to the warm-start frequentist MLE.</p></dd>
 <dd><p>Logical: print progress every 10% of iterations.</p></dd>
 
 
+<dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
+<dd><p>A <code>"bpclm"</code> object (in <code>print</code>, <code>plot</code> and
+<code>quantile</code> methods).</p></dd>
+
+
+<dt id="arg-digits">digits<a class="anchor" aria-label="anchor" href="#arg-digits"></a></dt>
+<dd><p>Number of significant digits used in <code>print</code>.</p></dd>
+
+
+<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
+<dd><p>Further arguments. Currently ignored by all methods.</p></dd>
+
+
+<dt id="arg-object">object<a class="anchor" aria-label="anchor" href="#arg-object"></a></dt>
+<dd><p>A <code>"bpclm"</code> object (in <code>summary</code>, <code>coef</code>,
+<code>fitted</code> and <code>predict</code> methods).</p></dd>
+
+
 <dt id="arg-probs">probs<a class="anchor" aria-label="anchor" href="#arg-probs"></a></dt>
 <dd><p>Probabilities at which to compute quantiles.</p></dd>
 
@@ -287,6 +305,12 @@ lower/upper credible limits when <code>summary = "mean"</code>.</p></dd>
 <dt id="arg-xlab-ylab-main-ylim-xlim-lwd">xlab, ylab, main, ylim, xlim, lwd<a class="anchor" aria-label="anchor" href="#arg-xlab-ylab-main-ylim-xlim-lwd"></a></dt>
 <dd><p>Standard graphical parameters
 (passed to plotting methods of <code>pclm</code> / <code>bpclm</code> fits).</p></dd>
+
+
+<dt id="arg-newdata">newdata<a class="anchor" aria-label="anchor" href="#arg-newdata"></a></dt>
+<dd><p>Optional numeric vector of points at which the fitted
+density is evaluated by <code>predict</code>. If missing, the posterior
+mean (or sample) density on the fine grid is returned.</p></dd>
 
 
 <dt id="arg-summary">summary<a class="anchor" aria-label="anchor" href="#arg-summary"></a></dt>

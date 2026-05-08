@@ -76,10 +76,26 @@ plot(
   of parametric multinomial draws to generate. Ignored for `bpclm`
   input. Default 2000.
 
+- x:
+
+  A `"pclm_posterior_predict"` object (in `print` and `plot` methods).
+
+- n:
+
+  Number of fine-grid rows shown by `print`. Default 6.
+
+- object:
+
+  A `"pclm_posterior_predict"` object (in `summary`).
+
 - show_bins:
 
   Logical: overlay the observed wide-bin histogram on the
   [`plot()`](https://rdrr.io/r/graphics/plot.default.html) method.
+
+- xlab, ylab, main, xlim, ylim, lwd:
+
+  Standard graphical parameters passed to `plot`.
 
 ## Value
 

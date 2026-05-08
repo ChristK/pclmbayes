@@ -195,6 +195,23 @@ quantile(
 
   Logical: print progress every 10% of iterations.
 
+- x:
+
+  A `"bpclm"` object (in `print`, `plot` and `quantile` methods).
+
+- digits:
+
+  Number of significant digits used in `print`.
+
+- ...:
+
+  Further arguments. Currently ignored by all methods.
+
+- object:
+
+  A `"bpclm"` object (in `summary`, `coef`, `fitted` and `predict`
+  methods).
+
 - probs:
 
   Probabilities at which to compute quantiles.
@@ -229,6 +246,12 @@ quantile(
 
   Standard graphical parameters (passed to plotting methods of `pclm` /
   `bpclm` fits).
+
+- newdata:
+
+  Optional numeric vector of points at which the fitted density is
+  evaluated by `predict`. If missing, the posterior mean (or sample)
+  density on the fine grid is returned.
 
 - summary:
 

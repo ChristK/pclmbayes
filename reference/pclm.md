@@ -66,6 +66,23 @@ pclm(
 
 ## Arguments
 
+- x:
+
+  A `"pclm"` object (in `print`, `plot` and `quantile` methods).
+
+- digits:
+
+  Number of significant digits used in `print`.
+
+- ...:
+
+  Further arguments. Currently ignored by all methods.
+
+- object:
+
+  A `"pclm"` object (in `summary`, `coef`, `fitted`, `logLik` and
+  `predict` methods).
+
 - probs:
 
   Probabilities at which to compute quantiles.
@@ -90,6 +107,12 @@ pclm(
 
   Standard graphical parameters (passed to plotting methods of `pclm` /
   `bpclm` fits).
+
+- newdata:
+
+  Optional numeric vector of points at which the fitted density is
+  evaluated by `predict`. If missing, the density is returned at the
+  fine-grid midpoints.
 
 - m:
 
