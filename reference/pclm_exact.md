@@ -123,5 +123,5 @@ fit <- pclm_exact(m = bloodlead$count,
                    a = 0, b = 80, ngrid = 80, ndx = 17, degree = 3,
                    penalty_order = 3)
 max(abs(fit$fitted_counts - fit$m))    # < 1e-8
-#> [1] 7.105427e-15
+#> [1] 3.552714e-15
 ```
