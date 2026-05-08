@@ -44,7 +44,8 @@ S3method(fitted, bpclm)
 importFrom(splines, splineDesign)
 importFrom(stats, quantile, predict, coef, fitted, logLik,
            rgamma, rnorm, runif, optimize, integrate, dnorm,
-           median, sd, var)
+           median, sd, var,
+           approx, rmultinom, setNames)
 importFrom(graphics, hist, lines, polygon, par, rect, abline, legend, axis, mtext, plot.default)
 importFrom(grDevices, rgb, adjustcolor)
 importFrom(utils, head, tail, modifyList)

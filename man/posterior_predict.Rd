@@ -61,8 +61,19 @@ posterior_predict(fit, ...)
 \code{"pclm_exact"}), the number of parametric multinomial draws
 to generate. Ignored for \code{bpclm} input. Default 2000.}
 
+\item{x}{A \code{"pclm_posterior_predict"} object (in \code{print}
+and \code{plot} methods).}
+
+\item{n}{Number of fine-grid rows shown by \code{print}. Default 6.}
+
+\item{object}{A \code{"pclm_posterior_predict"} object (in
+\code{summary}).}
+
 \item{show_bins}{Logical: overlay the observed wide-bin histogram on
 the \code{plot()} method.}
+
+\item{xlab, ylab, main, xlim, ylim, lwd}{Standard graphical parameters
+passed to \code{plot}.}
 }
 \value{
 An object of class \code{"pclm_posterior_predict"}: a list

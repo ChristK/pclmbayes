@@ -59,6 +59,16 @@ pclm(
 )
 }
 \arguments{
+\item{x}{A \code{"pclm"} object (in \code{print}, \code{plot} and
+\code{quantile} methods).}
+
+\item{digits}{Number of significant digits used in \code{print}.}
+
+\item{...}{Further arguments. Currently ignored by all methods.}
+
+\item{object}{A \code{"pclm"} object (in \code{summary}, \code{coef},
+\code{fitted}, \code{logLik} and \code{predict} methods).}
+
 \item{probs}{Probabilities at which to compute quantiles.}
 
 \item{add}{Logical: if \code{TRUE}, add to an existing plot.}
@@ -71,6 +81,10 @@ pclm(
 
 \item{xlab, ylab, main, ylim, xlim, lwd}{Standard graphical parameters
 (passed to plotting methods of \code{pclm} / \code{bpclm} fits).}
+
+\item{newdata}{Optional numeric vector of points at which the fitted
+density is evaluated by \code{predict}. If missing, the density is
+returned at the fine-grid midpoints.}
 
 \item{m}{Numeric vector of non-negative wide-bin counts (length
 \eqn{J}).}

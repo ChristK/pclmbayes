@@ -81,6 +81,15 @@
 #'   Defaults to the warm-start frequentist MLE.
 #' @param seed Optional integer for reproducibility.
 #' @param verbose Logical: print progress every 10\% of iterations.
+#' @param x A \code{"bpclm"} object (in \code{print}, \code{plot} and
+#'   \code{quantile} methods).
+#' @param object A \code{"bpclm"} object (in \code{summary}, \code{coef},
+#'   \code{fitted} and \code{predict} methods).
+#' @param digits Number of significant digits used in \code{print}.
+#' @param newdata Optional numeric vector of points at which the fitted
+#'   density is evaluated by \code{predict}. If missing, the posterior
+#'   mean (or sample) density on the fine grid is returned.
+#' @param ... Further arguments. Currently ignored by all methods.
 #'
 #' @return An object of class \code{"bpclm"}, a list with components:
 #'   \describe{

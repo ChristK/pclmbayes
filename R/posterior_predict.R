@@ -79,6 +79,13 @@
 #'   \code{"pclm_exact"}), the number of parametric multinomial draws
 #'   to generate. Ignored for \code{bpclm} input. Default 2000.
 #' @param seed Optional integer for reproducibility.
+#' @param x A \code{"pclm_posterior_predict"} object (in \code{print}
+#'   and \code{plot} methods).
+#' @param object A \code{"pclm_posterior_predict"} object (in
+#'   \code{summary}).
+#' @param n Number of fine-grid rows shown by \code{print}. Default 6.
+#' @param xlab,ylab,main,xlim,ylim,lwd Standard graphical parameters
+#'   passed to \code{plot}.
 #' @param ... Currently unused; for future extension.
 #'
 #' @return An object of class \code{"pclm_posterior_predict"}: a list

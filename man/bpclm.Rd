@@ -156,6 +156,16 @@ Defaults to the warm-start frequentist MLE.}
 
 \item{verbose}{Logical: print progress every 10\% of iterations.}
 
+\item{x}{A \code{"bpclm"} object (in \code{print}, \code{plot} and
+\code{quantile} methods).}
+
+\item{digits}{Number of significant digits used in \code{print}.}
+
+\item{...}{Further arguments. Currently ignored by all methods.}
+
+\item{object}{A \code{"bpclm"} object (in \code{summary}, \code{coef},
+\code{fitted} and \code{predict} methods).}
+
 \item{probs}{Probabilities at which to compute quantiles.}
 
 \item{cred}{Credible level for the band (default
@@ -174,6 +184,10 @@ lower/upper credible limits when \code{summary = "mean"}.}
 
 \item{xlab, ylab, main, ylim, xlim, lwd}{Standard graphical parameters
 (passed to plotting methods of \code{pclm} / \code{bpclm} fits).}
+
+\item{newdata}{Optional numeric vector of points at which the fitted
+density is evaluated by \code{predict}. If missing, the posterior
+mean (or sample) density on the fine grid is returned.}
 
 \item{summary}{One of \code{"mean"} (posterior mean of the quantile
 or predicted density), \code{"median"}, or \code{"sample"}

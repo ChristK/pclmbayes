@@ -56,6 +56,15 @@
 #'   density).
 #' @param verbose Logical: if \code{TRUE}, print one line per scoring
 #'   iteration.
+#' @param x A \code{"pclm"} object (in \code{print}, \code{plot} and
+#'   \code{quantile} methods).
+#' @param object A \code{"pclm"} object (in \code{summary}, \code{coef},
+#'   \code{fitted}, \code{logLik} and \code{predict} methods).
+#' @param digits Number of significant digits used in \code{print}.
+#' @param newdata Optional numeric vector of points at which the fitted
+#'   density is evaluated by \code{predict}. If missing, the density is
+#'   returned at the fine-grid midpoints.
+#' @param ... Further arguments. Currently ignored by all methods.
 #'
 #' @return An object of class \code{"pclm"}, a list with components:
 #'   \describe{

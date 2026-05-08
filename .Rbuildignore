@@ -8,6 +8,7 @@
 ^\.git$
 ^\.gitignore$
 ^\.claude$
+^figure$
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$

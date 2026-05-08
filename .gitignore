@@ -35,3 +35,6 @@ Thumbs.db
 # evidence; only ignore intermediate vignette outputs)
 tests/vignette-output.md
 tests/figure/
+
+# knitr cache directories from local vignette/test knits
+/figure/
