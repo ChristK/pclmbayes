@@ -41,7 +41,8 @@ Suggests:
     tinytest,
     knitr,
     rmarkdown,
-    ungroup
+    ungroup,
+    readxl
 VignetteBuilder: knitr
 URL: https://github.com/ChristK/pclmbayes, https://christk.github.io/pclmbayes/
 BugReports: https://github.com/ChristK/pclmbayes/issues
