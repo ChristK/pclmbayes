@@ -3,16 +3,10 @@ Type: Package
 Title: Bayesian Density Estimation from Grouped Continuous Data via the
     Penalised Composite Link Model
 Version: 0.1.0
-Authors@R: c(
+Authors@R:
     person("Chris", "Kypridemos",
            email = "christodoulosk@gmail.com",
-           role = c("aut", "cre")),
-    person("Philippe", "Lambert",
-           role = c("ctb"),
-           comment = "Author of the underlying method (Lambert & Eilers, 2009)"),
-    person("Paul H. C.", "Eilers",
-           role = c("ctb"),
-           comment = "Author of the underlying method (Lambert & Eilers, 2009)"))
+           role = c("aut", "cre"))
 Description: Estimates a smooth latent continuous density from data
     that have been grouped (binned) into wide, possibly irregular or
     overlapping intervals. The log of the latent density is modelled on
@@ -25,10 +19,12 @@ Description: Estimates a smooth latent continuous density from data
     provided. Optional shape-constraint priors (unimodality,
     log-concavity, monotonicity) are supported. Implements the method
     of Lambert and Eilers (2009)
-    <doi:10.1016/j.csda.2008.11.022>. British English is used in
-    documentation.
+    <doi:10.1016/j.csda.2008.11.022>; the authors gratefully
+    acknowledge Philippe Lambert and Paul H. C. Eilers, whose work
+    this package builds upon.
 License: GPL-3
 Encoding: UTF-8
+Language: en-GB
 LazyData: true
 Depends: R (>= 3.5.0)
 Imports:
