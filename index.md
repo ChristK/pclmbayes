@@ -144,6 +144,13 @@ original paper.
   historical inference. See `data-raw/make-data.R` for substitution
   instructions.
 
+## Acknowledgements
+
+This package implements a method developed by **Philippe Lambert** and
+**Paul H. C. Eilers** (Lambert and Eilers, 2009). We gratefully
+acknowledge their foundational work, on which `pclmbayes` builds. Any
+errors in this implementation are our own.
+
 ## References
 
 - Lambert, P. and Eilers, P. H. C. (2009). Bayesian density estimation

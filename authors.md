@@ -4,12 +4,6 @@
 
 - **Chris Kypridemos**. Author, maintainer.
 
-- **Philippe Lambert**. Contributor.  
-  Author of the underlying method (Lambert & Eilers, 2009)
-
-- **Paul H. C. Eilers**. Contributor.  
-  Author of the underlying method (Lambert & Eilers, 2009)
-
 ## Citation
 
 Source:

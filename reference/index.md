@@ -65,3 +65,11 @@
   : Lead concentration in the blood of New York children, 1974
 - [`tbdeaths1907`](https://christk.github.io/pclmbayes/reference/tbdeaths1907.md)
   : Tuberculosis deaths by age, The Netherlands, 1907
+- [`ons_deaths_ew_2022`](https://christk.github.io/pclmbayes/reference/ons_deaths_ew_2022.md)
+  : Deaths registered in England and Wales, 2022, by single year of age
+- [`ons_pop_uk_2024`](https://christk.github.io/pclmbayes/reference/ons_pop_uk_2024.md)
+  : UK mid-2024 population estimates by single year of age
+- [`ons_centenarians_uk_2024`](https://christk.github.io/pclmbayes/reference/ons_centenarians_uk_2024.md)
+  : UK 2024 population at very old ages
+- [`ons_covid_due_ew`](https://christk.github.io/pclmbayes/reference/ons_covid_due_ew.md)
+  : Deaths due to COVID-19, England and Wales, March 2020 to March 2023
