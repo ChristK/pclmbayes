@@ -96,14 +96,24 @@ summary(fit_b)
 
 ``` r
 
-# wide-bin death counts (e.g. 5-year age bands) and band edges
-fit  <- bpclm(m, wide_breaks, ...)
-fit  <- calibrate(fit)                                # exact band totals
-pp   <- posterior_predict(fit, type = "predictive")   # 90% PI for single-year counts
+library(pclmbayes)
+data(tbdeaths1907)   # wide-bin (uneven) death counts + band edges
+
+m           <- tbdeaths1907$count
+wide_breaks <- cbind(tbdeaths1907$lower, tbdeaths1907$upper)
+
+# Bayesian ungrouping to single years of age on (0, 120).
+fit <- bpclm(
+  m, wide_breaks,
+  a = 0, b = 120, ngrid = 120,
+  niter = 5000, burnin = 1000, seed = 1
+)
+fit <- calibrate(fit)                                 # exact band totals
+pp  <- posterior_predict(fit, type = "predictive")    # 90% PI for single-year counts
 plot(pp)
 
 # or, point-estimate only:
-fit_e <- pclm_exact(m, wide_breaks, ...)
+fit_e <- pclm_exact(m, wide_breaks, a = 0, b = 120, ngrid = 120)
 ```
 
 See the vignette
