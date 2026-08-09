@@ -139,14 +139,17 @@ for (X in terminal_grid) {
   cat("  open-bin width (terminal..104+open):",
       wb[nrow(wb), 2L] - wb[nrow(wb), 1L], "\n")
 
+  # `ndx` is left at its default: K = min(max(J + 7, 20), ngrid, 200). With
+  # J = 9 bins in every terminal scheme here that gives K = 20, unchanged
+  # from the fixed value used previously.
   f_p <- pclm(m = m_obs, wide_breaks = wb,
               a = a, b = b, ngrid = ngrid,
-              ndx = 17L, degree = 3L, penalty_order = 3L,
+              degree = 3L, penalty_order = 3L,
               select = "BIC")
   f_c <- calibrate(f_p)
   f_e <- pclm_exact(m = m_obs, wide_breaks = wb,
                     a = a, b = b, ngrid = ngrid,
-                    ndx = 17L, degree = 3L, penalty_order = 3L)
+                    degree = 3L, penalty_order = 3L)
 
   N        <- sum(m_obs)         # = sum(truth_fine) + open_105
   fit_p_i  <- N * f_p$pi

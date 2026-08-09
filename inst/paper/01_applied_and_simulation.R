@@ -69,7 +69,10 @@ wb_tb <- cbind(tbdeaths1907$lower, tbdeaths1907$upper)
 a_tb       <- 0
 b_tb       <- 120
 ngrid_tb   <- 120
-ndx_tb     <- 17L      # paper default (K = 20 cubic B-splines)
+# `ndx` is left at its default, so the basis dimension is derived from the
+# number of wide bins as K = min(max(J + 7, 20), ngrid, 200). With J = 12
+# bands here that gives K = 20 cubic B-splines, the value used by Lambert
+# and Eilers (2009). See ?pclm, "Choosing the basis dimension".
 degree_tb  <- 3L
 penord_tb  <- 3L       # 3rd-order penalty (paper recommendation)
 
@@ -77,7 +80,7 @@ penord_tb  <- 3L       # 3rd-order penalty (paper recommendation)
 t_pclm <- system.time(
   fit_pclm <- pclm(m = m_tb, wide_breaks = wb_tb,
                    a = a_tb, b = b_tb,
-                   ngrid = ngrid_tb, ndx = ndx_tb,
+                   ngrid = ngrid_tb,
                    degree = degree_tb, penalty_order = penord_tb,
                    select = "BIC")
 )["elapsed"]
@@ -89,7 +92,7 @@ t_calib <- system.time(fit_calib <- calibrate(fit_pclm))["elapsed"]
 t_exact <- system.time(
   fit_exact <- pclm_exact(m = m_tb, wide_breaks = wb_tb,
                           a = a_tb, b = b_tb,
-                          ngrid = ngrid_tb, ndx = ndx_tb,
+                          ngrid = ngrid_tb,
                           degree = degree_tb, penalty_order = penord_tb)
 )["elapsed"]
 
@@ -258,14 +261,14 @@ fit_methods <- function(m_obs, wide_breaks, truth_pi, Delta) {
     f_p <- pclm(m = m_obs, wide_breaks = wide_breaks,
                 a = a_sim, b = b_sim,
                 ngrid = ngrid_sim,
-                ndx = 17L, degree = 3L, penalty_order = 3L)
+                degree = 3L, penalty_order = 3L)
   )["elapsed"]
   f_c <- calibrate(f_p)
   t_ex <- system.time(
     f_e <- pclm_exact(m = m_obs, wide_breaks = wide_breaks,
                       a = a_sim, b = b_sim,
                       ngrid = ngrid_sim,
-                      ndx = 17L, degree = 3L, penalty_order = 3L)
+                      degree = 3L, penalty_order = 3L)
   )["elapsed"]
 
   # ISE between fitted density and truth (densities are pi / Delta).
