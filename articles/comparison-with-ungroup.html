@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">pclmbayes</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -61,7 +61,7 @@
                         <h4 data-toc-skip class="author">pclmbayes
 authors</h4>
             
-            <h4 data-toc-skip class="date">2026-05-27</h4>
+            <h4 data-toc-skip class="date">2026-08-09</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/ChristK/pclmbayes/blob/main/vignettes/comparison-with-ungroup.Rmd" class="external-link"><code>vignettes/comparison-with-ungroup.Rmd</code></a></small>
       <div class="d-none name"><code>comparison-with-ungroup.Rmd</code></div>
@@ -270,19 +270,19 @@ truth, max absolute residual on the wide-bin totals, and runtime.</p>
 <code class="sourceCode R"><span><span class="va">t_pclm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span></span>
 <span>  <span class="va">fit_pclm</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pclm.html">pclm</a></span><span class="op">(</span>m <span class="op">=</span> <span class="va">m_band</span>, wide_breaks <span class="op">=</span> <span class="va">wb</span>,</span>
 <span>                   a <span class="op">=</span> <span class="fl">0</span>, b <span class="op">=</span> <span class="fl">100</span>, ngrid <span class="op">=</span> <span class="fl">100L</span>,</span>
-<span>                   ndx <span class="op">=</span> <span class="fl">22L</span>, degree <span class="op">=</span> <span class="fl">3L</span>, penalty_order <span class="op">=</span> <span class="fl">3L</span><span class="op">)</span></span>
+<span>                   degree <span class="op">=</span> <span class="fl">3L</span>, penalty_order <span class="op">=</span> <span class="fl">3L</span><span class="op">)</span></span>
 <span><span class="op">)</span><span class="op">[[</span><span class="st">"elapsed"</span><span class="op">]</span><span class="op">]</span></span>
 <span></span>
 <span><span class="va">t_pclm_exact</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span></span>
 <span>  <span class="va">fit_exact</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pclm_exact.html">pclm_exact</a></span><span class="op">(</span>m <span class="op">=</span> <span class="va">m_band</span>, wide_breaks <span class="op">=</span> <span class="va">wb</span>,</span>
 <span>                          a <span class="op">=</span> <span class="fl">0</span>, b <span class="op">=</span> <span class="fl">100</span>, ngrid <span class="op">=</span> <span class="fl">100L</span>,</span>
-<span>                          ndx <span class="op">=</span> <span class="fl">22L</span>, degree <span class="op">=</span> <span class="fl">3L</span>, penalty_order <span class="op">=</span> <span class="fl">3L</span><span class="op">)</span></span>
+<span>                          degree <span class="op">=</span> <span class="fl">3L</span>, penalty_order <span class="op">=</span> <span class="fl">3L</span><span class="op">)</span></span>
 <span><span class="op">)</span><span class="op">[[</span><span class="st">"elapsed"</span><span class="op">]</span><span class="op">]</span></span>
 <span></span>
 <span><span class="va">t_bpclm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span></span>
 <span>  <span class="va">fit_b</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bpclm.html">bpclm</a></span><span class="op">(</span>m <span class="op">=</span> <span class="va">m_band</span>, wide_breaks <span class="op">=</span> <span class="va">wb</span>,</span>
 <span>                 a <span class="op">=</span> <span class="fl">0</span>, b <span class="op">=</span> <span class="fl">100</span>, ngrid <span class="op">=</span> <span class="fl">100L</span>,</span>
-<span>                 ndx <span class="op">=</span> <span class="fl">22L</span>, degree <span class="op">=</span> <span class="fl">3L</span>, penalty_order <span class="op">=</span> <span class="fl">3L</span>,</span>
+<span>                 degree <span class="op">=</span> <span class="fl">3L</span>, penalty_order <span class="op">=</span> <span class="fl">3L</span>,</span>
 <span>                 niter <span class="op">=</span> <span class="fl">3000L</span>, burnin <span class="op">=</span> <span class="fl">1000L</span>, adapt <span class="op">=</span> <span class="fl">500L</span>,</span>
 <span>                 seed <span class="op">=</span> <span class="fl">7L</span><span class="op">)</span></span>
 <span><span class="op">)</span><span class="op">[[</span><span class="st">"elapsed"</span><span class="op">]</span><span class="op">]</span></span>
@@ -325,10 +325,10 @@ truth, max absolute residual on the wide-bin totals, and runtime.</p>
 <span><span class="op">)</span></span>
 <span><span class="va">results</span></span>
 <span><span class="co">#&gt;           algorithm RMSE_yearly max_bin_residual elapsed_sec</span></span>
-<span><span class="co">#&gt; 1              pclm    44.79191     7.537445e+01       0.019</span></span>
-<span><span class="co">#&gt; 2 bpclm + calibrate    34.84219     4.547474e-13       0.286</span></span>
-<span><span class="co">#&gt; 3        pclm_exact    27.36794     1.818989e-12       0.025</span></span>
-<span><span class="co">#&gt; 4     ungroup::pclm    78.29337     1.392698e+00       0.107</span></span></code></pre></div>
+<span><span class="co">#&gt; 1              pclm    41.73115     6.039885e+01       0.015</span></span>
+<span><span class="co">#&gt; 2 bpclm + calibrate    34.62252     0.000000e+00       0.198</span></span>
+<span><span class="co">#&gt; 3        pclm_exact    28.05694     9.094947e-13       0.018</span></span>
+<span><span class="co">#&gt; 4     ungroup::pclm    78.29337     1.392698e+00       0.049</span></span></code></pre></div>
 <p>The expected pattern:</p>
 <ul>
 <li>
@@ -429,13 +429,13 @@ No ground truth — we visualise the recovered density.</p>
 <span><span class="va">wb_b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="va">bloodlead</span>, <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">lower</span>, <span class="va">upper</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">fit_b_pclm</span>  <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pclm.html">pclm</a></span><span class="op">(</span>      m <span class="op">=</span> <span class="va">bloodlead</span><span class="op">$</span><span class="va">count</span>, wide_breaks <span class="op">=</span> <span class="va">wb_b</span>,</span>
-<span>                          a <span class="op">=</span> <span class="fl">0</span>, b <span class="op">=</span> <span class="fl">80</span>, ngrid <span class="op">=</span> <span class="fl">80L</span>, ndx <span class="op">=</span> <span class="fl">17L</span>,</span>
+<span>                          a <span class="op">=</span> <span class="fl">0</span>, b <span class="op">=</span> <span class="fl">80</span>, ngrid <span class="op">=</span> <span class="fl">80L</span>,</span>
 <span>                          degree <span class="op">=</span> <span class="fl">3L</span>, penalty_order <span class="op">=</span> <span class="fl">3L</span><span class="op">)</span></span>
 <span><span class="va">fit_b_exact</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pclm_exact.html">pclm_exact</a></span><span class="op">(</span>m <span class="op">=</span> <span class="va">bloodlead</span><span class="op">$</span><span class="va">count</span>, wide_breaks <span class="op">=</span> <span class="va">wb_b</span>,</span>
-<span>                          a <span class="op">=</span> <span class="fl">0</span>, b <span class="op">=</span> <span class="fl">80</span>, ngrid <span class="op">=</span> <span class="fl">80L</span>, ndx <span class="op">=</span> <span class="fl">17L</span>,</span>
+<span>                          a <span class="op">=</span> <span class="fl">0</span>, b <span class="op">=</span> <span class="fl">80</span>, ngrid <span class="op">=</span> <span class="fl">80L</span>,</span>
 <span>                          degree <span class="op">=</span> <span class="fl">3L</span>, penalty_order <span class="op">=</span> <span class="fl">3L</span><span class="op">)</span></span>
 <span><span class="va">fit_b_bayes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bpclm.html">bpclm</a></span><span class="op">(</span>     m <span class="op">=</span> <span class="va">bloodlead</span><span class="op">$</span><span class="va">count</span>, wide_breaks <span class="op">=</span> <span class="va">wb_b</span>,</span>
-<span>                          a <span class="op">=</span> <span class="fl">0</span>, b <span class="op">=</span> <span class="fl">80</span>, ngrid <span class="op">=</span> <span class="fl">80L</span>, ndx <span class="op">=</span> <span class="fl">17L</span>,</span>
+<span>                          a <span class="op">=</span> <span class="fl">0</span>, b <span class="op">=</span> <span class="fl">80</span>, ngrid <span class="op">=</span> <span class="fl">80L</span>,</span>
 <span>                          degree <span class="op">=</span> <span class="fl">3L</span>, penalty_order <span class="op">=</span> <span class="fl">3L</span>,</span>
 <span>                          niter <span class="op">=</span> <span class="fl">4000L</span>, burnin <span class="op">=</span> <span class="fl">1000L</span>, adapt <span class="op">=</span> <span class="fl">500L</span>,</span>
 <span>                          shape <span class="op">=</span> <span class="st">"unimodal"</span>, seed <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span></span></code></pre></div>
@@ -528,13 +528,13 @@ absolute terms.</p>
 <span><span class="va">wb_t</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="va">tbdeaths1907</span>, <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">lower</span>, <span class="va">upper</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">fit_t_pclm</span>  <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pclm.html">pclm</a></span><span class="op">(</span>      m <span class="op">=</span> <span class="va">tbdeaths1907</span><span class="op">$</span><span class="va">count</span>, wide_breaks <span class="op">=</span> <span class="va">wb_t</span>,</span>
-<span>                          a <span class="op">=</span> <span class="fl">0</span>, b <span class="op">=</span> <span class="fl">120</span>, ngrid <span class="op">=</span> <span class="fl">120L</span>, ndx <span class="op">=</span> <span class="fl">17L</span>,</span>
+<span>                          a <span class="op">=</span> <span class="fl">0</span>, b <span class="op">=</span> <span class="fl">120</span>, ngrid <span class="op">=</span> <span class="fl">120L</span>,</span>
 <span>                          degree <span class="op">=</span> <span class="fl">3L</span>, penalty_order <span class="op">=</span> <span class="fl">3L</span><span class="op">)</span></span>
 <span><span class="va">fit_t_exact</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pclm_exact.html">pclm_exact</a></span><span class="op">(</span>m <span class="op">=</span> <span class="va">tbdeaths1907</span><span class="op">$</span><span class="va">count</span>, wide_breaks <span class="op">=</span> <span class="va">wb_t</span>,</span>
-<span>                          a <span class="op">=</span> <span class="fl">0</span>, b <span class="op">=</span> <span class="fl">120</span>, ngrid <span class="op">=</span> <span class="fl">120L</span>, ndx <span class="op">=</span> <span class="fl">17L</span>,</span>
+<span>                          a <span class="op">=</span> <span class="fl">0</span>, b <span class="op">=</span> <span class="fl">120</span>, ngrid <span class="op">=</span> <span class="fl">120L</span>,</span>
 <span>                          degree <span class="op">=</span> <span class="fl">3L</span>, penalty_order <span class="op">=</span> <span class="fl">3L</span><span class="op">)</span></span>
 <span><span class="va">fit_t_bayes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bpclm.html">bpclm</a></span><span class="op">(</span>     m <span class="op">=</span> <span class="va">tbdeaths1907</span><span class="op">$</span><span class="va">count</span>, wide_breaks <span class="op">=</span> <span class="va">wb_t</span>,</span>
-<span>                          a <span class="op">=</span> <span class="fl">0</span>, b <span class="op">=</span> <span class="fl">120</span>, ngrid <span class="op">=</span> <span class="fl">120L</span>, ndx <span class="op">=</span> <span class="fl">17L</span>,</span>
+<span>                          a <span class="op">=</span> <span class="fl">0</span>, b <span class="op">=</span> <span class="fl">120</span>, ngrid <span class="op">=</span> <span class="fl">120L</span>,</span>
 <span>                          degree <span class="op">=</span> <span class="fl">3L</span>, penalty_order <span class="op">=</span> <span class="fl">3L</span>,</span>
 <span>                          niter <span class="op">=</span> <span class="fl">3000L</span>, burnin <span class="op">=</span> <span class="fl">1000L</span>, adapt <span class="op">=</span> <span class="fl">500L</span>,</span>
 <span>                          seed <span class="op">=</span> <span class="fl">2L</span><span class="op">)</span></span></code></pre></div>
@@ -648,7 +648,7 @@ of Epidemiology</em>, 182(2), 138–147.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer>

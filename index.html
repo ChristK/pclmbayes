@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="index.html">pclmbayes</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -119,7 +119,7 @@
 <span><span class="va">fit_b</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/bpclm.html">bpclm</a></span><span class="op">(</span></span>
 <span>  m           <span class="op">=</span> <span class="va">bloodlead</span><span class="op">$</span><span class="va">count</span>,</span>
 <span>  wide_breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="va">bloodlead</span>, <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">lower</span>, <span class="va">upper</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  a <span class="op">=</span> <span class="fl">0</span>, b <span class="op">=</span> <span class="fl">80</span>, ngrid <span class="op">=</span> <span class="fl">80</span>, ndx <span class="op">=</span> <span class="fl">17</span>, degree <span class="op">=</span> <span class="fl">3</span>, penalty_order <span class="op">=</span> <span class="fl">3</span>,</span>
+<span>  a <span class="op">=</span> <span class="fl">0</span>, b <span class="op">=</span> <span class="fl">80</span>, ngrid <span class="op">=</span> <span class="fl">80</span>, degree <span class="op">=</span> <span class="fl">3</span>, penalty_order <span class="op">=</span> <span class="fl">3</span>,</span>
 <span>  niter <span class="op">=</span> <span class="fl">5000</span>, burnin <span class="op">=</span> <span class="fl">1000</span>, adapt <span class="op">=</span> <span class="fl">500</span>,</span>
 <span>  shape <span class="op">=</span> <span class="st">"unimodal"</span>, seed <span class="op">=</span> <span class="fl">1</span></span>
 <span><span class="op">)</span></span>
@@ -149,6 +149,12 @@
 <span><span class="co"># or, point-estimate only:</span></span>
 <span><span class="va">fit_e</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/pclm_exact.html">pclm_exact</a></span><span class="op">(</span><span class="va">m</span>, <span class="va">wide_breaks</span>, a <span class="op">=</span> <span class="fl">0</span>, b <span class="op">=</span> <span class="fl">120</span>, ngrid <span class="op">=</span> <span class="fl">120</span><span class="op">)</span></span></code></pre></div>
 <p>See the vignette (<code><a href="articles/pclmbayes-intro.html">vignette("pclmbayes-intro")</a></code>) for a full walkthrough.</p>
+</div>
+<div class="section level3">
+<h3 id="a-note-on-the-basis-dimension">A note on the basis dimension<a class="anchor" aria-label="anchor" href="#a-note-on-the-basis-dimension"></a>
+</h3>
+<p>The wide-bin counts identify at most <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>J</mi><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">J - 1</annotation></semantics></math> directions in the coefficient vector <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>ϕ</mi><annotation encoding="application/x-tex">\phi</annotation></semantics></math>, where <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>J</mi><annotation encoding="application/x-tex">J</annotation></semantics></math> is the number of wide bins; the rest are set by the penalty alone. When the number of B-splines <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math> is close to <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>J</mi><annotation encoding="application/x-tex">J</annotation></semantics></math> those directions are <em>smooth</em>, a difference penalty barely resists them, and the fit can develop large spurious excursions at the edges of the support. A larger basis is therefore more stable, not less.</p>
+<p>Leaving <code>ndx</code> at its default is the safe choice: <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math> is then derived from the problem as <code>min(max(J + 7, 20), ngrid, 200)</code>. If you set <code>ndx</code> yourself, keep <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>=</mo></mrow><annotation encoding="application/x-tex">K =</annotation></semantics></math><code>ndx + degree</code> at or above <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>J</mi><mo>+</mo><mn>4</mn></mrow><annotation encoding="application/x-tex">J + 4</annotation></semantics></math>; <code><a href="reference/pclm.html">pclm()</a></code>, <code><a href="reference/bpclm.html">bpclm()</a></code> and <code><a href="reference/pclm_exact.html">pclm_exact()</a></code> warn otherwise. See <code><a href="reference/pclm.html">?pclm</a></code>, section <em>Choosing the basis dimension</em>.</p>
 </div>
 </div>
 <div class="section level2">
@@ -241,7 +247,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer>

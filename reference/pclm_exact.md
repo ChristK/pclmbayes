@@ -17,13 +17,14 @@ pclm_exact(
   a = NULL,
   b = NULL,
   ngrid = 100L,
-  ndx = 17L,
+  ndx = NULL,
   degree = 3L,
   penalty_order = 3L,
   max_iter = 200L,
   tol = 1e-09,
   eps_ridge = 1e-08,
   phi_start = NULL,
+  check_basis = TRUE,
   verbose = FALSE
 )
 ```
@@ -53,8 +54,13 @@ pclm_exact(
 - ndx:
 
   Number of equally-spaced knot intervals on \\(a, b)\\. The number of
-  B-splines is `ndx + degree`. Default 17 (so \\K = 20\\ cubic
-  B-splines, matching the paper's examples).
+  B-splines is \\K =\\ `ndx + degree`. If `NULL` (the default), \\K\\ is
+  set to `min(max(J + 7, 20), ngrid, 200)`, where \\J\\ is the number of
+  wide bins. This keeps \\K = 20\\ (the value used in the examples of
+  Lambert and Eilers 2009) whenever \\J \le 13\\, and grows the basis
+  for problems with many bins so that \\K\\ stays clear of the
+  weak-identification band at \\K \approx J\\ — see **Choosing the basis
+  dimension** below.
 
 - degree:
 
@@ -79,6 +85,12 @@ pclm_exact(
   Optional starting value for \\\phi\\ (length `ndx + degree`). Defaults
   to the zero vector (uniform density).
 
+- check_basis:
+
+  Logical: if `TRUE` (the default), warn when the basis dimension \\K\\
+  lies within the weak-identification band \\K \< J + 4\\. Set to
+  `FALSE` to silence the check.
+
 - verbose:
 
   Logical: if `TRUE`, print one line per scoring iteration.
@@ -98,6 +110,16 @@ no kinks are introduced at the bin boundaries because the smoothness
 penalty is minimised across the whole fine grid subject to the
 constraint. Solved by sequential quadratic programming (Newton steps on
 the Lagrangian, with the constraint linearised at each step).
+
+## Choosing the basis dimension
+
+`pclm_exact` uses the same default `ndx` rule and the same `check_basis`
+guard as
+[`pclm`](https://christk.github.io/pclmbayes/reference/pclm.md); see
+**Choosing the basis dimension** there. Because it has no smoothing
+parameter to select, `pclm_exact` is markedly more robust to a
+badly-sized basis than `pclm` — but the fit is still smoothest, and the
+wide-bin shape best resolved, once \\K \ge J + 4\\.
 
 ## References
 
@@ -120,8 +142,8 @@ enforce the bin-total constraint exactly).
 data(bloodlead)
 fit <- pclm_exact(m = bloodlead$count,
                    wide_breaks = with(bloodlead, cbind(lower, upper)),
-                   a = 0, b = 80, ngrid = 80, ndx = 17, degree = 3,
+                   a = 0, b = 80, ngrid = 80, degree = 3,
                    penalty_order = 3)
 max(abs(fit$fitted_counts - fit$m))    # < 1e-8
-#> [1] 3.552714e-15
+#> [1] 7.105427e-15
 ```

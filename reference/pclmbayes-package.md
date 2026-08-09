@@ -74,11 +74,3 @@ Useful links:
 Authors:
 
 - Chris Kypridemos <christodoulosk@gmail.com>
-
-Other contributors:
-
-- Philippe Lambert (Author of the underlying method (Lambert & Eilers,
-  2009)) \[contributor\]
-
-- Paul H. C. Eilers (Author of the underlying method (Lambert & Eilers,
-  2009)) \[contributor\]

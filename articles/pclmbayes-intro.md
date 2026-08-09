@@ -71,15 +71,15 @@ fit_f <- pclm(
   wide_breaks   = with(bloodlead, cbind(lower, upper)),
   a             = 0, b = 80,
   ngrid         = 80L,
-  ndx           = 17L, degree = 3L,
+  degree        = 3L,
   penalty_order = 3L,
   select        = "BIC"
 )
 fit_f
 #> Penalised composite link model (frequentist)
 #> Call: pclm(m = bloodlead$count, wide_breaks = with(bloodlead, cbind(lower, 
-#>     upper)), a = 0, b = 80, ngrid = 80L, ndx = 17L, degree = 3L, 
-#>     penalty_order = 3L, select = "BIC")
+#>     upper)), a = 0, b = 80, ngrid = 80L, degree = 3L, penalty_order = 3L, 
+#>     select = "BIC")
 #> 
 #> Number of wide bins: 7  | total counts: 139 
 #> Fine grid:80intervals on (0, 80)
@@ -108,7 +108,7 @@ fit_b <- bpclm(
   wide_breaks   = with(bloodlead, cbind(lower, upper)),
   a             = 0, b = 80,
   ngrid         = 80L,
-  ndx           = 17L, degree = 3L,
+  degree        = 3L,
   penalty_order = 3L,
   niter         = 5000L, burnin = 1000L, adapt = 500L,
   shape         = "unimodal",
@@ -117,9 +117,9 @@ fit_b <- bpclm(
 fit_b
 #> Bayesian penalised composite link model
 #> Call: bpclm(m = bloodlead$count, wide_breaks = with(bloodlead, cbind(lower, 
-#>     upper)), a = 0, b = 80, ngrid = 80L, ndx = 17L, degree = 3L, 
-#>     penalty_order = 3L, niter = 5000L, burnin = 1000L, adapt = 500L, 
-#>     shape = "unimodal", seed = 1)
+#>     upper)), a = 0, b = 80, ngrid = 80L, degree = 3L, penalty_order = 3L, 
+#>     niter = 5000L, burnin = 1000L, adapt = 500L, shape = "unimodal", 
+#>     seed = 1)
 #> 
 #> Number of wide bins: 7  | total counts: 139 
 #> Fine grid:80intervals on (0, 80)
@@ -158,14 +158,14 @@ c(mean   = mean(prob_above_30),
   lower  = quantile(prob_above_30, 0.05, names = FALSE),
   upper  = quantile(prob_above_30, 0.95, names = FALSE))
 #>      mean     lower     upper 
-#> 0.1495729 0.1067085 0.2005136
+#> 0.1495731 0.1067085 0.2005131
 
 summary(fit_b, probs = c(0.20, 0.80))
 #> Bayesian penalised composite link model
 #> Call: bpclm(m = bloodlead$count, wide_breaks = with(bloodlead, cbind(lower, 
-#>     upper)), a = 0, b = 80, ngrid = 80L, ndx = 17L, degree = 3L, 
-#>     penalty_order = 3L, niter = 5000L, burnin = 1000L, adapt = 500L, 
-#>     shape = "unimodal", seed = 1)
+#>     upper)), a = 0, b = 80, ngrid = 80L, degree = 3L, penalty_order = 3L, 
+#>     niter = 5000L, burnin = 1000L, adapt = 500L, shape = "unimodal", 
+#>     seed = 1)
 #> 
 #> Number of wide bins: 7  | total counts: 139 
 #> Fine grid:80intervals on (0, 80)
@@ -181,7 +181,7 @@ summary(fit_b, probs = c(0.20, 0.80))
 #> 
 #> Posterior summaries of quantiles (mean and 90% CI):
 #>    p    mean      lo      hi
-#>  0.2 14.9881 13.5972 16.2548
+#>  0.2 14.9881 13.5971 16.2548
 #>  0.8 28.0798 26.3564 30.0208
 ```
 
@@ -211,7 +211,7 @@ fit_tb <- bpclm(
   wide_breaks   = with(tbdeaths1907, cbind(lower, upper)),
   a             = 0, b = 120,
   ngrid         = 120L,
-  ndx           = 17L, degree = 3L, penalty_order = 3L,
+  degree        = 3L, penalty_order = 3L,
   niter         = 4000L, burnin = 1000L, adapt = 500L,
   seed          = 2
 )
@@ -304,10 +304,10 @@ fit_e <- pclm_exact(
   m             = bloodlead$count,
   wide_breaks   = with(bloodlead, cbind(lower, upper)),
   a             = 0, b = 80,
-  ngrid         = 80L, ndx = 17L, degree = 3L, penalty_order = 3L
+  ngrid         = 80L, degree = 3L, penalty_order = 3L
 )
 max(abs(fit_e$fitted_counts - fit_e$m))     # ~ 1e-13
-#> [1] 3.552714e-15
+#> [1] 7.105427e-15
 ```
 
 ### Single-year ungrouping demonstration
@@ -335,12 +335,12 @@ wb     <- cbind(seq(0, 95, by = 5), seq(5, 100, by = 5))
 
 fit_pe <- pclm_exact(m = m_band, wide_breaks = wb,
                      a = 0, b = 100, ngrid = 100L,
-                     ndx = 22L, degree = 3L, penalty_order = 3L)
+                     degree = 3L, penalty_order = 3L)
 yhat <- fit_pe$pi * sum(m_band)
 sqrt(mean((yhat - true_yearly) ^ 2))         # RMSE per single year
-#> [1] 18.90452
+#> [1] 19.24502
 max(abs(fit_pe$fitted_counts - m_band))      # exact preservation
-#> [1] 1.818989e-12
+#> [1] 9.094947e-13
 ```
 
 The RMSE per year sits close to the irreducible multinomial-within-band
@@ -375,7 +375,7 @@ Two distinct uncertainty objects are supported:
 
 fit_b <- bpclm(m = m_band, wide_breaks = wb,
                a = 0, b = 100, ngrid = 100L,
-               ndx = 22L, degree = 3L, penalty_order = 3L,
+               degree = 3L, penalty_order = 3L,
                niter = 4000L, burnin = 1000L, adapt = 500L,
                seed = 7)
 fit_b <- calibrate(fit_b)               # exact band totals on every draw

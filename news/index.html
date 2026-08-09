@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">pclmbayes</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,6 +38,20 @@
     </div>
 
     <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.2.0" id="pclmbayes-020">pclmbayes 0.2.0<a class="anchor" aria-label="anchor" href="#pclmbayes-020"></a></h2>
+<div class="section level3">
+<h3 id="bug-fix-erratic-fits-when-the-basis-dimension-is-close-to-the-bin-count-0-2-0">Bug fix: erratic fits when the basis dimension is close to the bin count<a class="anchor" aria-label="anchor" href="#bug-fix-erratic-fits-when-the-basis-dimension-is-close-to-the-bin-count-0-2-0"></a></h3>
+<ul><li>
+<p><code><a href="../reference/pclm.html">pclm()</a></code>, <code><a href="../reference/bpclm.html">bpclm()</a></code> and <code><a href="../reference/pclm_exact.html">pclm_exact()</a></code> could return wildly erratic densities — most visibly large spurious excursions at the edges of the support — whenever the number of B-splines  happened to fall near the number of wide bins .</p>
+<p>The cause is structural, not numerical. The composite-link matrix  is , so the wide-bin counts identify at most  directions in the coefficient vector ; the rest are fixed by  alone. For  those directions are high-frequency, where  is large and even a small  suppresses them. For  they are smooth, where  is small, the Fisher information is severely ill-conditioned, and  can grow without bound. A <em>larger</em> basis is therefore more stable, not less.</p>
+<p>Concretely: ungrouping the ONS mid-2024 UK population from 5-year bands plus an open 90+ bin () back to single years of age gave a fitted 2,365,717 people at age 0 against a true 667,994 — a mean absolute error of 30% across ages 0–20, peaking at 254%, with . With the new default the same call gives 1.0% mean / 2.5% maximum and . <code><a href="../reference/bpclm.html">bpclm()</a></code> was affected identically: the Gibbs step on  does not protect against this, because the  posterior collapses towards zero for the same reason the BIC-selected value does.</p>
+</li>
+<li><p><strong>Breaking change.</strong> The default <code>ndx</code> in <code><a href="../reference/pclm.html">pclm()</a></code>, <code><a href="../reference/bpclm.html">bpclm()</a></code> and <code><a href="../reference/pclm_exact.html">pclm_exact()</a></code> is now <code>NULL</code>, meaning the basis dimension is derived from the problem as <code>K = min(max(J + 7, 20), ngrid, 200)</code> rather than being fixed at <code>K = 20</code>. This keeps <code>K = 20</code> — the value used in the examples of Lambert and Eilers (2009) — for every problem with , so fits of <code>bloodlead</code> () and <code>tbdeaths1907</code> () are bit-for-bit unchanged. Problems with more wide bins now get a larger basis. Pass <code>ndx</code> explicitly to restore the old behaviour exactly.</p></li>
+<li><p>New argument <code>check_basis</code> (default <code>TRUE</code>) in <code><a href="../reference/pclm.html">pclm()</a></code>, <code><a href="../reference/bpclm.html">bpclm()</a></code> and <code><a href="../reference/pclm_exact.html">pclm_exact()</a></code> warns when the basis dimension falls inside the weak-identification band , naming the constraint that binds (<code>ndx</code> or <code>ngrid</code>). Set <code>check_basis = FALSE</code> to silence it.</p></li>
+<li><p>New section <strong>Choosing the basis dimension</strong> in <code><a href="../reference/pclm.html">?pclm</a></code> and <code><a href="../reference/pclm_exact.html">?pclm_exact</a></code> explains the mechanism, the safe threshold, and the related caution that at very large  the multinomial log-likelihood dwarfs the effective-degrees-of-freedom term, so <code>BIC</code> and <code>AIC</code> can be monotone in  across the whole candidate grid and the selected  is pinned at an endpoint. Check with <code>fit$tau %in% range(fit$tau_grid)</code>; <code><a href="../reference/pclm_exact.html">pclm_exact()</a></code> avoids the issue entirely, having no  to select.</p></li>
+</ul></div>
+</div>
+    <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.0" id="pclmbayes-010">pclmbayes 0.1.0<a class="anchor" aria-label="anchor" href="#pclmbayes-010"></a></h2>
 <ul><li>Initial release. Implements the method of Lambert and Eilers (2009) “Bayesian density estimation from grouped continuous data” (<em>Computational Statistics and Data Analysis</em> 53(4), 1388-1399).</li>
 <li>Frequentist fit <code><a href="../reference/pclm.html">pclm()</a></code>: penalised scoring with BIC/AIC selection of the smoothing parameter.</li>
@@ -46,7 +60,8 @@
 <li>Example datasets <code>bloodlead</code> (verbatim from Hasselblad et al. 1980 / the paper) and <code>tbdeaths1907</code> (illustrative reconstruction; see help page for caveats).</li>
 <li>Vignette reproducing the worked examples of the paper.</li>
 </ul></div>
-  </main></div>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">
@@ -54,7 +69,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer></div>

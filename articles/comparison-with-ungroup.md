@@ -106,19 +106,19 @@ wb     <- cbind(seq(0, 95, by = 5L), seq(5, 100, by = 5L))
 t_pclm <- system.time(
   fit_pclm <- pclm(m = m_band, wide_breaks = wb,
                    a = 0, b = 100, ngrid = 100L,
-                   ndx = 22L, degree = 3L, penalty_order = 3L)
+                   degree = 3L, penalty_order = 3L)
 )[["elapsed"]]
 
 t_pclm_exact <- system.time(
   fit_exact <- pclm_exact(m = m_band, wide_breaks = wb,
                           a = 0, b = 100, ngrid = 100L,
-                          ndx = 22L, degree = 3L, penalty_order = 3L)
+                          degree = 3L, penalty_order = 3L)
 )[["elapsed"]]
 
 t_bpclm <- system.time(
   fit_b <- bpclm(m = m_band, wide_breaks = wb,
                  a = 0, b = 100, ngrid = 100L,
-                 ndx = 22L, degree = 3L, penalty_order = 3L,
+                 degree = 3L, penalty_order = 3L,
                  niter = 3000L, burnin = 1000L, adapt = 500L,
                  seed = 7L)
 )[["elapsed"]]
@@ -165,10 +165,10 @@ results <- data.frame(
 )
 results
 #>           algorithm RMSE_yearly max_bin_residual elapsed_sec
-#> 1              pclm    44.79191     7.537445e+01       0.019
-#> 2 bpclm + calibrate    34.84219     4.547474e-13       0.286
-#> 3        pclm_exact    27.36794     1.818989e-12       0.025
-#> 4     ungroup::pclm    78.29337     1.392698e+00       0.107
+#> 1              pclm    41.73115     6.039885e+01       0.015
+#> 2 bpclm + calibrate    34.62252     0.000000e+00       0.198
+#> 3        pclm_exact    28.05694     9.094947e-13       0.018
+#> 4     ungroup::pclm    78.29337     1.392698e+00       0.049
 ```
 
 The expected pattern:
@@ -276,13 +276,13 @@ data(bloodlead)
 wb_b <- with(bloodlead, cbind(lower, upper))
 
 fit_b_pclm  <- pclm(      m = bloodlead$count, wide_breaks = wb_b,
-                          a = 0, b = 80, ngrid = 80L, ndx = 17L,
+                          a = 0, b = 80, ngrid = 80L,
                           degree = 3L, penalty_order = 3L)
 fit_b_exact <- pclm_exact(m = bloodlead$count, wide_breaks = wb_b,
-                          a = 0, b = 80, ngrid = 80L, ndx = 17L,
+                          a = 0, b = 80, ngrid = 80L,
                           degree = 3L, penalty_order = 3L)
 fit_b_bayes <- bpclm(     m = bloodlead$count, wide_breaks = wb_b,
-                          a = 0, b = 80, ngrid = 80L, ndx = 17L,
+                          a = 0, b = 80, ngrid = 80L,
                           degree = 3L, penalty_order = 3L,
                           niter = 4000L, burnin = 1000L, adapt = 500L,
                           shape = "unimodal", seed = 1L)
@@ -387,13 +387,13 @@ data(tbdeaths1907)
 wb_t <- with(tbdeaths1907, cbind(lower, upper))
 
 fit_t_pclm  <- pclm(      m = tbdeaths1907$count, wide_breaks = wb_t,
-                          a = 0, b = 120, ngrid = 120L, ndx = 17L,
+                          a = 0, b = 120, ngrid = 120L,
                           degree = 3L, penalty_order = 3L)
 fit_t_exact <- pclm_exact(m = tbdeaths1907$count, wide_breaks = wb_t,
-                          a = 0, b = 120, ngrid = 120L, ndx = 17L,
+                          a = 0, b = 120, ngrid = 120L,
                           degree = 3L, penalty_order = 3L)
 fit_t_bayes <- bpclm(     m = tbdeaths1907$count, wide_breaks = wb_t,
-                          a = 0, b = 120, ngrid = 120L, ndx = 17L,
+                          a = 0, b = 120, ngrid = 120L,
                           degree = 3L, penalty_order = 3L,
                           niter = 3000L, burnin = 1000L, adapt = 500L,
                           seed = 2L)

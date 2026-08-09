@@ -52,7 +52,7 @@ pclm(
   a = NULL,
   b = NULL,
   ngrid = 100L,
-  ndx = 17L,
+  ndx = NULL,
   degree = 3L,
   penalty_order = 3L,
   tau = NULL,
@@ -60,6 +60,7 @@ pclm(
   max_iter = 100L,
   tol = 1e-07,
   phi_start = NULL,
+  check_basis = TRUE,
   verbose = FALSE
 )
 ```
@@ -137,8 +138,13 @@ pclm(
 - ndx:
 
   Number of equally-spaced knot intervals on \\(a, b)\\. The number of
-  B-splines is `ndx + degree`. Default 17 (so \\K = 20\\ cubic
-  B-splines, matching the paper's examples).
+  B-splines is \\K =\\ `ndx + degree`. If `NULL` (the default), \\K\\ is
+  set to `min(max(J + 7, 20), ngrid, 200)`, where \\J\\ is the number of
+  wide bins. This keeps \\K = 20\\ (the value used in the examples of
+  Lambert and Eilers 2009) whenever \\J \le 13\\, and grows the basis
+  for problems with many bins so that \\K\\ stays clear of the
+  weak-identification band at \\K \approx J\\ — see **Choosing the basis
+  dimension** below.
 
 - degree:
 
@@ -172,6 +178,12 @@ pclm(
 
   Optional starting value for \\\phi\\ (length `ndx + degree`). Defaults
   to the zero vector (uniform density).
+
+- check_basis:
+
+  Logical: if `TRUE` (the default), warn when the basis dimension \\K\\
+  lies within the weak-identification band \\K \< J + 4\\. Set to
+  `FALSE` to silence the check.
 
 - verbose:
 
@@ -265,6 +277,41 @@ length \\\> 1\\), the value minimising the chosen information criterion
 variance-covariance matrix of the coefficients is the inverse of the
 penalised Fisher information at convergence (Eq. 3 of the paper).
 
+## Choosing the basis dimension
+
+The composite-link matrix \\C\\ is \\J \times I\\, so however fine the
+grid, the wide-bin counts identify at most \\J - 1\\ directions in the
+\\K\\-dimensional coefficient space (one dimension is lost to the
+invariance \\\phi \mapsto \phi + c\mathbf{1}\\ of the softmax). The
+remaining \\K - (J - 1)\\ directions are determined by \\\tau P\\ alone.
+
+Whether that is benign depends on *which* directions they are. For \\K
+\gg J\\ they are high-frequency B-spline patterns, for which \\\phi' P
+\phi\\ is large, so even a small \\\tau\\ annihilates them. For \\K
+\approx J\\ they are smooth, low-frequency patterns, for which \\\phi' P
+\phi\\ is small: the penalty barely resists, the Fisher information
+becomes severely ill-conditioned, and \\\phi\\ can grow very large along
+them. The fitted density then develops big spurious excursions, most
+visibly at the edges of the support. Counter-intuitively, therefore, a
+*larger* basis is more stable, not less.
+
+The failure band is roughly \\\|K - J\| \le 3\\; \\K \ge J + 4\\ is
+reliably well behaved, and the fit reaches its asymptote by about \\K =
+J + 7\\. The default `ndx` targets that asymptote, and
+`check_basis = TRUE` warns if an explicitly supplied `ndx` falls inside
+the band.
+
+A related caution: at very large \\m\_+\\ (population counts, say) the
+multinomial log-likelihood dwarfs the effective-degrees-of-freedom term,
+so `BIC` and `AIC` can be monotone in \\\tau\\ over the whole candidate
+grid, and the selected \\\tau\\ is then pinned at an endpoint rather
+than at a genuine optimum. Check this with
+`fit$tau %in% range(fit$tau_grid)`. When the wide-bin totals are known
+rather than sampled — the usual situation when ungrouping published
+tables —
+[`pclm_exact`](https://christk.github.io/pclmbayes/reference/pclm_exact.md)
+sidesteps the issue entirely, because it has no \\\tau\\ to select.
+
 ## References
 
 Eilers, P. H. C. (2007). Ill-posed problems with counts, the composite
@@ -287,13 +334,12 @@ the Bayesian variant.
 data(bloodlead)
 fit <- pclm(m = bloodlead$count,
             wide_breaks = with(bloodlead, cbind(lower, upper)),
-            a = 0, b = 80, ngrid = 80, ndx = 17, degree = 3,
+            a = 0, b = 80, ngrid = 80, degree = 3,
             penalty_order = 3)
 summary(fit)
 #> Penalised composite link model (frequentist)
 #> Call: pclm(m = bloodlead$count, wide_breaks = with(bloodlead, cbind(lower, 
-#>     upper)), a = 0, b = 80, ngrid = 80, ndx = 17, degree = 3, 
-#>     penalty_order = 3)
+#>     upper)), a = 0, b = 80, ngrid = 80, degree = 3, penalty_order = 3)
 #> 
 #> Number of wide bins: 7  | total counts: 139 
 #> Fine grid:80intervals on (0, 80)

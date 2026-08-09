@@ -84,7 +84,7 @@ data(bloodlead)
 fit_b <- bpclm(
   m           = bloodlead$count,
   wide_breaks = with(bloodlead, cbind(lower, upper)),
-  a = 0, b = 80, ngrid = 80, ndx = 17, degree = 3, penalty_order = 3,
+  a = 0, b = 80, ngrid = 80, degree = 3, penalty_order = 3,
   niter = 5000, burnin = 1000, adapt = 500,
   shape = "unimodal", seed = 1
 )
@@ -119,6 +119,26 @@ fit_e <- pclm_exact(m, wide_breaks, a = 0, b = 120, ngrid = 120)
 See the vignette
 ([`vignette("pclmbayes-intro")`](https://christk.github.io/pclmbayes/articles/pclmbayes-intro.md))
 for a full walkthrough.
+
+### A note on the basis dimension
+
+The wide-bin counts identify at most $`J - 1`$ directions in the
+coefficient vector $`\phi`$, where $`J`$ is the number of wide bins; the
+rest are set by the penalty alone. When the number of B-splines $`K`$ is
+close to $`J`$ those directions are *smooth*, a difference penalty
+barely resists them, and the fit can develop large spurious excursions
+at the edges of the support. A larger basis is therefore more stable,
+not less.
+
+Leaving `ndx` at its default is the safe choice: $`K`$ is then derived
+from the problem as `min(max(J + 7, 20), ngrid, 200)`. If you set `ndx`
+yourself, keep $`K =`$`ndx + degree` at or above $`J + 4`$;
+[`pclm()`](https://christk.github.io/pclmbayes/reference/pclm.md),
+[`bpclm()`](https://christk.github.io/pclmbayes/reference/bpclm.md) and
+[`pclm_exact()`](https://christk.github.io/pclmbayes/reference/pclm_exact.md)
+warn otherwise. See
+[`?pclm`](https://christk.github.io/pclmbayes/reference/pclm.md),
+section *Choosing the basis dimension*.
 
 ## Method summary
 

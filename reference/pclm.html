@@ -17,7 +17,7 @@ multinomial distribution with probabilities
 
     <a class="navbar-brand me-2" href="../index.html">pclmbayes</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -102,7 +102,7 @@ multinomial distribution with probabilities
 <span>  a <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  b <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  ngrid <span class="op">=</span> <span class="fl">100L</span>,</span>
-<span>  ndx <span class="op">=</span> <span class="fl">17L</span>,</span>
+<span>  ndx <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  degree <span class="op">=</span> <span class="fl">3L</span>,</span>
 <span>  penalty_order <span class="op">=</span> <span class="fl">3L</span>,</span>
 <span>  tau <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -110,6 +110,7 @@ multinomial distribution with probabilities
 <span>  max_iter <span class="op">=</span> <span class="fl">100L</span>,</span>
 <span>  tol <span class="op">=</span> <span class="fl">1e-07</span>,</span>
 <span>  phi_start <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  check_basis <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -190,8 +191,14 @@ and largest upper limit of <code>wide_breaks</code>.</p></dd>
 
 <dt id="arg-ndx">ndx<a class="anchor" aria-label="anchor" href="#arg-ndx"></a></dt>
 <dd><p>Number of equally-spaced knot intervals on \((a, b)\).
-The number of B-splines is <code>ndx + degree</code>. Default 17 (so
-\(K = 20\) cubic B-splines, matching the paper's examples).</p></dd>
+The number of B-splines is \(K =\) <code>ndx + degree</code>. If
+<code>NULL</code> (the default), \(K\) is set to
+<code>min(max(J + 7, 20), ngrid, 200)</code>, where \(J\) is the number
+of wide bins. This keeps \(K = 20\) (the value used in the
+examples of Lambert and Eilers 2009) whenever \(J \le 13\), and
+grows the basis for problems with many bins so that \(K\) stays
+clear of the weak-identification band at \(K \approx J\) — see
+<strong>Choosing the basis dimension</strong> below.</p></dd>
 
 
 <dt id="arg-degree">degree<a class="anchor" aria-label="anchor" href="#arg-degree"></a></dt>
@@ -228,6 +235,12 @@ grid is provided: either <code>"BIC"</code> (default) or <code>"AIC"</code>.</p>
 <dd><p>Optional starting value for \(\phi\) (length
 <code>ndx + degree</code>). Defaults to the zero vector (uniform
 density).</p></dd>
+
+
+<dt id="arg-check-basis">check_basis<a class="anchor" aria-label="anchor" href="#arg-check-basis"></a></dt>
+<dd><p>Logical: if <code>TRUE</code> (the default), warn when
+the basis dimension \(K\) lies within the weak-identification
+band \(K &lt; J + 4\). Set to <code>FALSE</code> to silence the check.</p></dd>
 
 
 <dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
@@ -313,6 +326,41 @@ coefficients is the inverse of the penalised Fisher information at
 convergence (Eq. 3 of the paper).</p>
     </div>
     <div class="section level2">
+    <h2 id="choosing-the-basis-dimension">Choosing the basis dimension<a class="anchor" aria-label="anchor" href="#choosing-the-basis-dimension"></a></h2>
+
+
+<p>The composite-link matrix \(C\) is \(J \times I\), so however
+fine the grid, the wide-bin counts identify at most \(J - 1\)
+directions in the \(K\)-dimensional coefficient space (one
+dimension is lost to the invariance
+\(\phi \mapsto \phi + c\mathbf{1}\) of the softmax). The remaining
+\(K - (J - 1)\) directions are determined by \(\tau P\) alone.</p>
+<p>Whether that is benign depends on <em>which</em> directions they are.
+For \(K \gg J\) they are high-frequency B-spline patterns, for
+which \(\phi' P \phi\) is large, so even a small \(\tau\)
+annihilates them. For \(K \approx J\) they are smooth,
+low-frequency patterns, for which \(\phi' P \phi\) is small: the
+penalty barely resists, the Fisher information becomes severely
+ill-conditioned, and \(\phi\) can grow very large along them. The
+fitted density then develops big spurious excursions, most visibly
+at the edges of the support. Counter-intuitively, therefore, a
+<em>larger</em> basis is more stable, not less.</p>
+<p>The failure band is roughly \(|K - J| \le 3\); \(K \ge J + 4\)
+is reliably well behaved, and the fit reaches its asymptote by about
+\(K = J + 7\). The default <code>ndx</code> targets that asymptote, and
+<code>check_basis = TRUE</code> warns if an explicitly supplied <code>ndx</code>
+falls inside the band.</p>
+<p>A related caution: at very large \(m_+\) (population counts, say)
+the multinomial log-likelihood dwarfs the effective-degrees-of-freedom
+term, so <code>BIC</code> and <code>AIC</code> can be monotone in \(\tau\) over
+the whole candidate grid, and the selected \(\tau\) is then pinned
+at an endpoint rather than at a genuine optimum. Check this with
+<code>fit$tau %in% range(fit$tau_grid)</code>. When the wide-bin totals
+are known rather than sampled — the usual situation when
+ungrouping published tables — <code><a href="pclm_exact.html">pclm_exact</a></code> sidesteps
+the issue entirely, because it has no \(\tau\) to select.</p>
+    </div>
+    <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
     <p>Eilers, P. H. C. (2007). Ill-posed problems with counts, the
 composite link model and penalized likelihood. <em>Statistical
@@ -332,13 +380,12 @@ penalised-scoring form implemented here.)</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">bloodlead</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu">pclm</span><span class="op">(</span>m <span class="op">=</span> <span class="va">bloodlead</span><span class="op">$</span><span class="va">count</span>,</span></span>
 <span class="r-in"><span>            wide_breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="va">bloodlead</span>, <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">lower</span>, <span class="va">upper</span><span class="op">)</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>            a <span class="op">=</span> <span class="fl">0</span>, b <span class="op">=</span> <span class="fl">80</span>, ngrid <span class="op">=</span> <span class="fl">80</span>, ndx <span class="op">=</span> <span class="fl">17</span>, degree <span class="op">=</span> <span class="fl">3</span>,</span></span>
+<span class="r-in"><span>            a <span class="op">=</span> <span class="fl">0</span>, b <span class="op">=</span> <span class="fl">80</span>, ngrid <span class="op">=</span> <span class="fl">80</span>, degree <span class="op">=</span> <span class="fl">3</span>,</span></span>
 <span class="r-in"><span>            penalty_order <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Penalised composite link model (frequentist)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Call: pclm(m = bloodlead$count, wide_breaks = with(bloodlead, cbind(lower, </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     upper)), a = 0, b = 80, ngrid = 80, ndx = 17, degree = 3, </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     penalty_order = 3)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     upper)), a = 0, b = 80, ngrid = 80, degree = 3, penalty_order = 3)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Number of wide bins: 7  | total counts: 139 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Fine grid:80intervals on (0, 80)</span>
@@ -373,7 +420,7 @@ penalised-scoring form implemented here.)</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer></div>

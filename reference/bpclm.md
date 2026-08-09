@@ -15,7 +15,7 @@ bpclm(
   a = NULL,
   b = NULL,
   ngrid = 100L,
-  ndx = 17L,
+  ndx = NULL,
   degree = 3L,
   penalty_order = 3L,
   niter = 5000L,
@@ -32,6 +32,7 @@ bpclm(
   shape_args = list(),
   phi_init = NULL,
   seed = NULL,
+  check_basis = TRUE,
   verbose = FALSE
 )
 
@@ -114,8 +115,13 @@ quantile(
 - ndx:
 
   Number of equally-spaced knot intervals on \\(a, b)\\. The number of
-  B-splines is `ndx + degree`. Default 17 (so \\K = 20\\ cubic
-  B-splines, matching the paper's examples).
+  B-splines is \\K =\\ `ndx + degree`. If `NULL` (the default), \\K\\ is
+  set to `min(max(J + 7, 20), ngrid, 200)`, where \\J\\ is the number of
+  wide bins. This keeps \\K = 20\\ (the value used in the examples of
+  Lambert and Eilers 2009) whenever \\J \le 13\\, and grows the basis
+  for problems with many bins so that \\K\\ stays clear of the
+  weak-identification band at \\K \approx J\\ — see **Choosing the basis
+  dimension** below.
 
 - degree:
 
@@ -190,6 +196,17 @@ quantile(
 - seed:
 
   Optional integer for reproducibility.
+
+- check_basis:
+
+  Logical: if `TRUE` (the default), warn when the basis dimension \\K\\
+  lies within the weak-identification band \\K \< J + 4\\. See
+  **Choosing the basis dimension** in
+  [`pclm`](https://christk.github.io/pclmbayes/reference/pclm.md); the
+  same considerations apply here, and the Gibbs step on \\\tau\\ does
+  *not* protect against the problem — at \\K \approx J\\ the posterior
+  for \\\tau\\ collapses towards zero just as the BIC-selected value
+  does.
 
 - verbose:
 
@@ -351,14 +368,14 @@ data(bloodlead)
 fit <- bpclm(m = bloodlead$count,
              wide_breaks = with(bloodlead, cbind(lower, upper)),
              a = 0, b = 80,
-             ngrid = 80, ndx = 17,
+             ngrid = 80,
              niter = 2000, burnin = 500,
              shape = "unimodal", seed = 1)
 summary(fit)
 #> Bayesian penalised composite link model
 #> Call: bpclm(m = bloodlead$count, wide_breaks = with(bloodlead, cbind(lower, 
-#>     upper)), a = 0, b = 80, ngrid = 80, ndx = 17, niter = 2000, 
-#>     burnin = 500, shape = "unimodal", seed = 1)
+#>     upper)), a = 0, b = 80, ngrid = 80, niter = 2000, burnin = 500, 
+#>     shape = "unimodal", seed = 1)
 #> 
 #> Number of wide bins: 7  | total counts: 139 
 #> Fine grid:80intervals on (0, 80)
@@ -369,17 +386,17 @@ summary(fit)
 #> Shape constraint(s): unimodal 
 #> Posterior mean tau = 19.5 (sd 46.7)
 #> 
-#> Posterior of mean(Y):  21.7779  (90% CI: 20.5296, 23.0596)
+#> Posterior of mean(Y):  21.7779  (90% CI: 20.5296, 23.0597)
 #> Posterior of sd(Y):    8.2889  (90% CI: 7.1929, 9.3911)
 #> 
 #> Posterior summaries of quantiles (mean and 90% CI):
 #>     p    mean      lo      hi
-#>  0.05  9.6024  7.0296 11.6006
+#>  0.05  9.6024  7.0299 11.6007
 #>  0.10 12.0372 10.1232 13.6278
 #>  0.25 16.1954 14.9382 17.4892
 #>  0.50 20.9888 19.7886 22.4045
 #>  0.75 26.4068 24.8010 28.1725
-#>  0.90 32.5078 30.0854 35.0971
-#>  0.95 36.9349 33.7977 40.6506
+#>  0.90 32.5078 30.0854 35.0970
+#>  0.95 36.9349 33.7977 40.6505
 # }
 ```

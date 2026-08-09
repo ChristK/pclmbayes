@@ -15,7 +15,7 @@ parameter \(\tau\) with a vague \(\Gamma(a, b)\) hyperprior."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">pclmbayes</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -62,7 +62,7 @@ parameter \(\tau\) with a vague \(\Gamma(a, b)\) hyperprior.</p>
 <span>  a <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  b <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  ngrid <span class="op">=</span> <span class="fl">100L</span>,</span>
-<span>  ndx <span class="op">=</span> <span class="fl">17L</span>,</span>
+<span>  ndx <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  degree <span class="op">=</span> <span class="fl">3L</span>,</span>
 <span>  penalty_order <span class="op">=</span> <span class="fl">3L</span>,</span>
 <span>  niter <span class="op">=</span> <span class="fl">5000L</span>,</span>
@@ -79,6 +79,7 @@ parameter \(\tau\) with a vague \(\Gamma(a, b)\) hyperprior.</p>
 <span>  shape_args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  phi_init <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  seed <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  check_basis <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -163,8 +164,14 @@ and largest upper limit of <code>wide_breaks</code>.</p></dd>
 
 <dt id="arg-ndx">ndx<a class="anchor" aria-label="anchor" href="#arg-ndx"></a></dt>
 <dd><p>Number of equally-spaced knot intervals on \((a, b)\).
-The number of B-splines is <code>ndx + degree</code>. Default 17 (so
-\(K = 20\) cubic B-splines, matching the paper's examples).</p></dd>
+The number of B-splines is \(K =\) <code>ndx + degree</code>. If
+<code>NULL</code> (the default), \(K\) is set to
+<code>min(max(J + 7, 20), ngrid, 200)</code>, where \(J\) is the number
+of wide bins. This keeps \(K = 20\) (the value used in the
+examples of Lambert and Eilers 2009) whenever \(J \le 13\), and
+grows the basis for problems with many bins so that \(K\) stays
+clear of the weak-identification band at \(K \approx J\) — see
+<strong>Choosing the basis dimension</strong> below.</p></dd>
 
 
 <dt id="arg-degree">degree<a class="anchor" aria-label="anchor" href="#arg-degree"></a></dt>
@@ -248,6 +255,16 @@ Defaults to the warm-start frequentist MLE.</p></dd>
 
 <dt id="arg-seed">seed<a class="anchor" aria-label="anchor" href="#arg-seed"></a></dt>
 <dd><p>Optional integer for reproducibility.</p></dd>
+
+
+<dt id="arg-check-basis">check_basis<a class="anchor" aria-label="anchor" href="#arg-check-basis"></a></dt>
+<dd><p>Logical: if <code>TRUE</code> (the default), warn when
+the basis dimension \(K\) lies within the weak-identification
+band \(K &lt; J + 4\). See <strong>Choosing the basis dimension</strong> in
+<code><a href="pclm.html">pclm</a></code>; the same considerations apply here, and the
+Gibbs step on \(\tau\) does <em>not</em> protect against the
+problem — at \(K \approx J\) the posterior for \(\tau\)
+collapses towards zero just as the BIC-selected value does.</p></dd>
 
 
 <dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
@@ -402,14 +419,14 @@ Monte Carlo algorithms. <em>Bernoulli</em>, 11(5), 815–828.</p>
 <span class="r-in"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu">bpclm</span><span class="op">(</span>m <span class="op">=</span> <span class="va">bloodlead</span><span class="op">$</span><span class="va">count</span>,</span></span>
 <span class="r-in"><span>             wide_breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="va">bloodlead</span>, <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">lower</span>, <span class="va">upper</span><span class="op">)</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>             a <span class="op">=</span> <span class="fl">0</span>, b <span class="op">=</span> <span class="fl">80</span>,</span></span>
-<span class="r-in"><span>             ngrid <span class="op">=</span> <span class="fl">80</span>, ndx <span class="op">=</span> <span class="fl">17</span>,</span></span>
+<span class="r-in"><span>             ngrid <span class="op">=</span> <span class="fl">80</span>,</span></span>
 <span class="r-in"><span>             niter <span class="op">=</span> <span class="fl">2000</span>, burnin <span class="op">=</span> <span class="fl">500</span>,</span></span>
 <span class="r-in"><span>             shape <span class="op">=</span> <span class="st">"unimodal"</span>, seed <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Bayesian penalised composite link model</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Call: bpclm(m = bloodlead$count, wide_breaks = with(bloodlead, cbind(lower, </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     upper)), a = 0, b = 80, ngrid = 80, ndx = 17, niter = 2000, </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     burnin = 500, shape = "unimodal", seed = 1)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     upper)), a = 0, b = 80, ngrid = 80, niter = 2000, burnin = 500, </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     shape = "unimodal", seed = 1)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Number of wide bins: 7  | total counts: 139 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Fine grid:80intervals on (0, 80)</span>
@@ -420,18 +437,18 @@ Monte Carlo algorithms. <em>Bernoulli</em>, 11(5), 815–828.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Shape constraint(s): unimodal </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Posterior mean tau = 19.5 (sd 46.7)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Posterior of mean(Y):  21.7779  (90% CI: 20.5296, 23.0596)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Posterior of mean(Y):  21.7779  (90% CI: 20.5296, 23.0597)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Posterior of sd(Y):    8.2889  (90% CI: 7.1929, 9.3911)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Posterior summaries of quantiles (mean and 90% CI):</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     p    mean      lo      hi</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  0.05  9.6024  7.0296 11.6006</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  0.05  9.6024  7.0299 11.6007</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  0.10 12.0372 10.1232 13.6278</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  0.25 16.1954 14.9382 17.4892</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  0.50 20.9888 19.7886 22.4045</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  0.75 26.4068 24.8010 28.1725</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  0.90 32.5078 30.0854 35.0971</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  0.95 36.9349 33.7977 40.6506</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  0.90 32.5078 30.0854 35.0970</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  0.95 36.9349 33.7977 40.6505</span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
@@ -445,7 +462,7 @@ Monte Carlo algorithms. <em>Bernoulli</em>, 11(5), 815–828.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer></div>
