@@ -80,6 +80,13 @@
 #' @param phi_init Optional starting value for the chain on \eqn{\phi}.
 #'   Defaults to the warm-start frequentist MLE.
 #' @param seed Optional integer for reproducibility.
+#' @param check_basis Logical: if \code{TRUE} (the default), warn when
+#'   the basis dimension \eqn{K} lies within the weak-identification
+#'   band \eqn{K < J + 4}. See \strong{Choosing the basis dimension} in
+#'   \code{\link{pclm}}; the same considerations apply here, and the
+#'   Gibbs step on \eqn{\tau} does \emph{not} protect against the
+#'   problem --- at \eqn{K \approx J} the posterior for \eqn{\tau}
+#'   collapses towards zero just as the BIC-selected value does.
 #' @param verbose Logical: print progress every 10\% of iterations.
 #' @param x A \code{"bpclm"} object (in \code{print}, \code{plot} and
 #'   \code{quantile} methods).
@@ -148,7 +155,7 @@
 bpclm <- function(m, wide_breaks,
                   a = NULL, b = NULL,
                   ngrid = 100L,
-                  ndx = 17L, degree = 3L,
+                  ndx = NULL, degree = 3L,
                   penalty_order = 3L,
                   niter = 5000L,
                   burnin = NULL,
@@ -163,6 +170,7 @@ bpclm <- function(m, wide_breaks,
                   shape_args = list(),
                   phi_init = NULL,
                   seed = NULL,
+                  check_basis = TRUE,
                   verbose = FALSE) {
 
   cl <- match.call()
@@ -170,10 +178,14 @@ bpclm <- function(m, wide_breaks,
   if (!is.null(seed)) set.seed(seed)
 
   # ---- Frequentist warm start -------------------------------------------
+  # The basis-dimension check (and the `ndx = NULL` default) is handled by
+  # pclm(); it fires here at most once, and the internal re-fits below pass
+  # check_basis = FALSE so the user is not warned repeatedly.
   warm <- pclm(m = m, wide_breaks = wide_breaks,
                a = a, b = b,
                ngrid = ngrid, ndx = ndx, degree = degree,
-               penalty_order = penalty_order)
+               penalty_order = penalty_order,
+               check_basis = check_basis)
 
   basis <- warm$basis
   Bmat  <- basis$B
@@ -290,7 +302,7 @@ bpclm <- function(m, wide_breaks,
              ngrid = length(warm$grid_mid),
              ndx = basis$ndx, degree = basis$degree,
              penalty_order = penalty_order,
-             tau = tau_try),
+             tau = tau_try, check_basis = FALSE),
         error = function(e) NULL)
       if (is.null(warm_smoothed)) next
       phi_try <- warm_smoothed$phi

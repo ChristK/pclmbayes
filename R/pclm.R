@@ -37,8 +37,14 @@
 #'   and largest upper limit of \code{wide_breaks}.
 #' @param ngrid Number of fine-grid intervals \eqn{I}. Defaults to 100.
 #' @param ndx Number of equally-spaced knot intervals on \eqn{(a, b)}.
-#'   The number of B-splines is \code{ndx + degree}. Default 17 (so
-#'   \eqn{K = 20} cubic B-splines, matching the paper's examples).
+#'   The number of B-splines is \eqn{K =} \code{ndx + degree}. If
+#'   \code{NULL} (the default), \eqn{K} is set to
+#'   \code{min(max(J + 7, 20), ngrid, 200)}, where \eqn{J} is the number
+#'   of wide bins. This keeps \eqn{K = 20} (the value used in the
+#'   examples of Lambert and Eilers 2009) whenever \eqn{J \le 13}, and
+#'   grows the basis for problems with many bins so that \eqn{K} stays
+#'   clear of the weak-identification band at \eqn{K \approx J} --- see
+#'   \strong{Choosing the basis dimension} below.
 #' @param degree B-spline degree (default 3, cubic).
 #' @param penalty_order Order \eqn{r} of the difference penalty
 #'   (default 3, as in the paper's examples).
@@ -54,6 +60,9 @@
 #' @param phi_start Optional starting value for \eqn{\phi} (length
 #'   \code{ndx + degree}). Defaults to the zero vector (uniform
 #'   density).
+#' @param check_basis Logical: if \code{TRUE} (the default), warn when
+#'   the basis dimension \eqn{K} lies within the weak-identification
+#'   band \eqn{K < J + 4}. Set to \code{FALSE} to silence the check.
 #' @param verbose Logical: if \code{TRUE}, print one line per scoring
 #'   iteration.
 #' @param x A \code{"pclm"} object (in \code{print}, \code{plot} and
@@ -96,6 +105,41 @@
 #'     \item{call}{The matched call.}
 #'   }
 #'
+#' @section Choosing the basis dimension:
+#' The composite-link matrix \eqn{C} is \eqn{J \times I}, so however
+#' fine the grid, the wide-bin counts identify at most \eqn{J - 1}
+#' directions in the \eqn{K}-dimensional coefficient space (one
+#' dimension is lost to the invariance
+#' \eqn{\phi \mapsto \phi + c\mathbf{1}} of the softmax). The remaining
+#' \eqn{K - (J - 1)} directions are determined by \eqn{\tau P} alone.
+#'
+#' Whether that is benign depends on \emph{which} directions they are.
+#' For \eqn{K \gg J} they are high-frequency B-spline patterns, for
+#' which \eqn{\phi' P \phi} is large, so even a small \eqn{\tau}
+#' annihilates them. For \eqn{K \approx J} they are smooth,
+#' low-frequency patterns, for which \eqn{\phi' P \phi} is small: the
+#' penalty barely resists, the Fisher information becomes severely
+#' ill-conditioned, and \eqn{\phi} can grow very large along them. The
+#' fitted density then develops big spurious excursions, most visibly
+#' at the edges of the support. Counter-intuitively, therefore, a
+#' \emph{larger} basis is more stable, not less.
+#'
+#' The failure band is roughly \eqn{|K - J| \le 3}; \eqn{K \ge J + 4}
+#' is reliably well behaved, and the fit reaches its asymptote by about
+#' \eqn{K = J + 7}. The default \code{ndx} targets that asymptote, and
+#' \code{check_basis = TRUE} warns if an explicitly supplied \code{ndx}
+#' falls inside the band.
+#'
+#' A related caution: at very large \eqn{m_+} (population counts, say)
+#' the multinomial log-likelihood dwarfs the effective-degrees-of-freedom
+#' term, so \code{BIC} and \code{AIC} can be monotone in \eqn{\tau} over
+#' the whole candidate grid, and the selected \eqn{\tau} is then pinned
+#' at an endpoint rather than at a genuine optimum. Check this with
+#' \code{fit$tau \%in\% range(fit$tau_grid)}. When the wide-bin totals
+#' are known rather than sampled --- the usual situation when
+#' ungrouping published tables --- \code{\link{pclm_exact}} sidesteps
+#' the issue entirely, because it has no \eqn{\tau} to select.
+#'
 #' @references
 #' Eilers, P. H. C. (2007). Ill-posed problems with counts, the
 #' composite link model and penalized likelihood. \emph{Statistical
@@ -122,13 +166,14 @@
 pclm <- function(m, wide_breaks,
                  a = NULL, b = NULL,
                  ngrid = 100L,
-                 ndx = 17L, degree = 3L,
+                 ndx = NULL, degree = 3L,
                  penalty_order = 3L,
                  tau = NULL,
                  select = c("BIC", "AIC"),
                  max_iter = 100L,
                  tol = 1e-7,
                  phi_start = NULL,
+                 check_basis = TRUE,
                  verbose = FALSE) {
 
   cl <- match.call()
@@ -166,6 +211,16 @@ pclm <- function(m, wide_breaks,
   ngrid       <- as.integer(ngrid)
   fine_breaks <- seq(a, b, length.out = ngrid + 1L)
   mids        <- (head(fine_breaks, -1L) + tail(fine_breaks, -1L)) / 2
+
+  # Basis dimension: default from the bin count, or as supplied.
+  J_bins       <- nrow(wb)
+  ndx_supplied <- !is.null(ndx)
+  if (!ndx_supplied) ndx <- .default_ndx(ngrid, degree, J_bins)
+  if (check_basis) {
+    .check_basis_dim(K = as.integer(ndx) + as.integer(degree), J = J_bins,
+                     degree = degree, ndx_supplied = ndx_supplied,
+                     ngrid = ngrid)
+  }
 
   # Basis and penalty
   basis <- bspline_basis(mids, a = a, b = b, ndx = ndx, degree = degree)

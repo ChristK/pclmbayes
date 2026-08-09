@@ -115,6 +115,21 @@ fit_e <- pclm_exact(m, wide_breaks, a = 0, b = 120, ngrid = 120)
 See the vignette (`vignette("pclmbayes-intro")`) for a full
 walkthrough.
 
+### A note on the basis dimension
+
+The wide-bin counts identify at most $J - 1$ directions in the
+coefficient vector $\phi$, where $J$ is the number of wide bins; the
+rest are set by the penalty alone. When the number of B-splines $K$ is
+close to $J$ those directions are *smooth*, a difference penalty barely
+resists them, and the fit can develop large spurious excursions at the
+edges of the support. A larger basis is therefore more stable, not less.
+
+Leaving `ndx` at its default is the safe choice: $K$ is then derived
+from the problem as `min(max(J + 7, 20), ngrid, 200)`. If you set `ndx`
+yourself, keep $K =$ `ndx + degree` at or above $J + 4$; `pclm()`,
+`bpclm()` and `pclm_exact()` warn otherwise. See
+`?pclm`, section *Choosing the basis dimension*.
+
 ## Method summary
 
 The latent random variable $Y$ is supported on $(a, b)$, partitioned

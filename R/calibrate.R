@@ -179,6 +179,15 @@ calibrate.bpclm <- function(fit, ...) {
 #'   for numerical stability. Default \code{1e-8}.
 #' @param max_iter,tol Convergence controls.
 #'
+#' @section Choosing the basis dimension:
+#' \code{pclm_exact} uses the same default \code{ndx} rule and the same
+#' \code{check_basis} guard as \code{\link{pclm}}; see
+#' \strong{Choosing the basis dimension} there. Because it has no
+#' smoothing parameter to select, \code{pclm_exact} is markedly more
+#' robust to a badly-sized basis than \code{pclm} --- but the fit is
+#' still smoothest, and the wide-bin shape best resolved, once
+#' \eqn{K \ge J + 4}.
+#'
 #' @return An object of class \code{c("pclm_exact", "pclm")} with the
 #'   same components as a \code{\link{pclm}} object, plus
 #'   \code{lambda} (the converged Lagrange multipliers) and
@@ -207,11 +216,12 @@ calibrate.bpclm <- function(fit, ...) {
 pclm_exact <- function(m, wide_breaks,
                        a = NULL, b = NULL,
                        ngrid = 100L,
-                       ndx = 17L, degree = 3L,
+                       ndx = NULL, degree = 3L,
                        penalty_order = 3L,
                        max_iter = 200L, tol = 1e-9,
                        eps_ridge = 1e-8,
                        phi_start = NULL,
+                       check_basis = TRUE,
                        verbose = FALSE) {
   cl <- match.call()
 
@@ -227,6 +237,17 @@ pclm_exact <- function(m, wide_breaks,
 
   fine_breaks <- seq(a, b, length.out = ngrid + 1L)
   mids        <- (head(fine_breaks, -1) + tail(fine_breaks, -1)) / 2
+
+  # Basis dimension: default from the bin count, or as supplied.
+  J_bins       <- nrow(wb)
+  ndx_supplied <- !is.null(ndx)
+  if (!ndx_supplied) ndx <- .default_ndx(ngrid, degree, J_bins)
+  if (check_basis) {
+    .check_basis_dim(K = as.integer(ndx) + as.integer(degree), J = J_bins,
+                     degree = degree, ndx_supplied = ndx_supplied,
+                     ngrid = ngrid)
+  }
+
   basis       <- bspline_basis(mids, a = a, b = b,
                                ndx = ndx, degree = degree)
   K           <- basis$K
@@ -242,7 +263,8 @@ pclm_exact <- function(m, wide_breaks,
     warm <- pclm(m = m, wide_breaks = wb,
                  a = a, b = b, ngrid = ngrid, ndx = ndx, degree = degree,
                  penalty_order = penalty_order,
-                 tau = 1)         # mild smoothing as a starting point
+                 tau = 1,         # mild smoothing as a starting point
+                 check_basis = FALSE)   # already checked above
     phi <- warm$phi
   } else {
     phi <- .centre(as.numeric(phi_start))

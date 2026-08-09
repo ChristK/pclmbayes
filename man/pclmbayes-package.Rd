@@ -79,11 +79,5 @@ Authors:
   \item Chris Kypridemos \email{christodoulosk@gmail.com}
 }
 
-Other contributors:
-\itemize{
-  \item Philippe Lambert (Author of the underlying method (Lambert & Eilers, 2009)) [contributor]
-  \item Paul H. C. Eilers (Author of the underlying method (Lambert & Eilers, 2009)) [contributor]
-}
-
 }
 \keyword{internal}

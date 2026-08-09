@@ -17,7 +17,7 @@ bpclm(
   a = NULL,
   b = NULL,
   ngrid = 100L,
-  ndx = 17L,
+  ndx = NULL,
   degree = 3L,
   penalty_order = 3L,
   niter = 5000L,
@@ -34,6 +34,7 @@ bpclm(
   shape_args = list(),
   phi_init = NULL,
   seed = NULL,
+  check_basis = TRUE,
   verbose = FALSE
 )
 
@@ -98,8 +99,14 @@ and largest upper limit of \code{wide_breaks}.}
 \item{ngrid}{Number of fine-grid intervals \eqn{I}. Defaults to 100.}
 
 \item{ndx}{Number of equally-spaced knot intervals on \eqn{(a, b)}.
-The number of B-splines is \code{ndx + degree}. Default 17 (so
-\eqn{K = 20} cubic B-splines, matching the paper's examples).}
+The number of B-splines is \eqn{K =} \code{ndx + degree}. If
+\code{NULL} (the default), \eqn{K} is set to
+\code{min(max(J + 7, 20), ngrid, 200)}, where \eqn{J} is the number
+of wide bins. This keeps \eqn{K = 20} (the value used in the
+examples of Lambert and Eilers 2009) whenever \eqn{J \le 13}, and
+grows the basis for problems with many bins so that \eqn{K} stays
+clear of the weak-identification band at \eqn{K \approx J} --- see
+\strong{Choosing the basis dimension} below.}
 
 \item{degree}{B-spline degree (default 3, cubic).}
 
@@ -153,6 +160,14 @@ sense.}
 Defaults to the warm-start frequentist MLE.}
 
 \item{seed}{Optional integer for reproducibility.}
+
+\item{check_basis}{Logical: if \code{TRUE} (the default), warn when
+the basis dimension \eqn{K} lies within the weak-identification
+band \eqn{K < J + 4}. See \strong{Choosing the basis dimension} in
+\code{\link{pclm}}; the same considerations apply here, and the
+Gibbs step on \eqn{\tau} does \emph{not} protect against the
+problem --- at \eqn{K \approx J} the posterior for \eqn{\tau}
+collapses towards zero just as the BIC-selected value does.}
 
 \item{verbose}{Logical: print progress every 10\% of iterations.}
 

@@ -223,6 +223,76 @@ bin_matrix <- function(wide_breaks, fine_breaks) {
   C
 }
 
+# -----------------------------------------------------------------------------
+# Basis dimension: default and identifiability guard
+# -----------------------------------------------------------------------------
+#
+# The composite-link matrix C is J x I, so however fine the grid, the wide-bin
+# counts identify at most J - 1 directions in the K-dimensional coefficient
+# space (one dimension is lost to the softmax invariance phi -> phi + c).  The
+# remaining K - (J - 1) directions are determined by tau * P alone.
+#
+# Whether that is benign depends on *which* directions they are.  When K is far
+# above J the unidentified directions are high-frequency B-spline patterns,
+# for which phi' P phi is large, so even a small tau annihilates them.  When K
+# is close to J they are smooth, low-frequency patterns, for which phi' P phi
+# is small -- the penalty barely resists, the Fisher information is severely
+# ill-conditioned, and phi can grow without bound along them.  The fitted
+# density then develops large spurious excursions, most visibly at the edges of
+# the support.
+#
+# Empirically -- sweeping K against three different binnings of the ONS
+# single-year population data (5-year bands with and without an open 90+ bin,
+# and 10-year bands) -- the failure band is K within about three of J,
+# wherever J happens to fall: 5-year + 90+ (J = 19) fails at K = 19, 20, 21;
+# 5-year closed (J = 18) at K = 17, 19; 10-year (J = 9) at K = 9, 10, 12.
+# K >= J + 4 is reliably well behaved and the fit reaches its asymptote by
+# roughly K = J + 7.
+#
+# dev/map-failure-region.R reproduces those three sweeps;
+# inst/tinytest/test_identifiability.R pins the resulting thresholds and
+# carries a regression test for the worst case.
+
+# Number of knot intervals used when the caller does not supply `ndx`.
+#
+# K = ndx + degree is chosen as
+#   * at least J + 7, clear of the weak-identification band;
+#   * at least 20, the Lambert and Eilers (2009) default, so small-J problems
+#     keep the basis used in the paper's examples;
+#   * at most `ngrid`, since more B-splines than fine-grid intervals leaves the
+#     basis rank-deficient in its row space;
+#   * at most 200, because the scoring step is O(K^3) per iteration and the fit
+#     is indistinguishable well below that.
+.default_ndx <- function(ngrid, degree, J) {
+  K <- min(max(as.integer(J) + 7L, 20L), as.integer(ngrid), 200L)
+  max(K - as.integer(degree), 1L)
+}
+
+# Warn when the basis dimension sits in (or below) the weak-identification band.
+# The remedy named in the message must be the constraint that actually binds:
+# an explicit `ndx`, or -- when `ndx` was defaulted -- either `ngrid` or the
+# hard 200 cap in .default_ndx().
+.check_basis_dim <- function(K, J, degree, ndx_supplied, ngrid) {
+  K <- as.integer(K); J <- as.integer(J); degree <- as.integer(degree)
+  if (K >= J + 4L) return(invisible(NULL))
+  remedy <- if (ndx_supplied || as.integer(ngrid) >= J + 4L) {
+    sprintf("Set `ndx` to at least %d (so that K = ndx + degree >= J + 4).",
+            J + 4L - degree)
+  } else {
+    sprintf(paste0("Increase `ngrid` to at least %d; it is what caps the ",
+                   "automatic basis dimension here."), J + 4L)
+  }
+  warning(sprintf(paste0(
+    "Basis dimension K = %d is close to the number of wide bins J = %d.\n",
+    "  The wide-bin counts identify at most J - 1 = %d directions in phi; the ",
+    "rest are\n  set by the penalty alone, and at K ~ J those directions are ",
+    "smooth, which a\n  difference penalty barely penalises. The fit may show ",
+    "large spurious\n  excursions, typically at the edges of the support. %s"),
+    K, J, J - 1L, remedy),
+    call. = FALSE)
+  invisible(NULL)
+}
+
 # ---- Internal helpers -------------------------------------------------------
 
 # Numerically stable softmax: pi_i = exp(eta_i) / sum_l exp(eta_l).

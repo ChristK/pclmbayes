@@ -11,13 +11,14 @@ pclm_exact(
   a = NULL,
   b = NULL,
   ngrid = 100L,
-  ndx = 17L,
+  ndx = NULL,
   degree = 3L,
   penalty_order = 3L,
   max_iter = 200L,
   tol = 1e-09,
   eps_ridge = 1e-08,
   phi_start = NULL,
+  check_basis = TRUE,
   verbose = FALSE
 )
 }
@@ -36,8 +37,14 @@ and largest upper limit of \code{wide_breaks}.}
 \item{ngrid}{Number of fine-grid intervals \eqn{I}. Defaults to 100.}
 
 \item{ndx}{Number of equally-spaced knot intervals on \eqn{(a, b)}.
-The number of B-splines is \code{ndx + degree}. Default 17 (so
-\eqn{K = 20} cubic B-splines, matching the paper's examples).}
+The number of B-splines is \eqn{K =} \code{ndx + degree}. If
+\code{NULL} (the default), \eqn{K} is set to
+\code{min(max(J + 7, 20), ngrid, 200)}, where \eqn{J} is the number
+of wide bins. This keeps \eqn{K = 20} (the value used in the
+examples of Lambert and Eilers 2009) whenever \eqn{J \le 13}, and
+grows the basis for problems with many bins so that \eqn{K} stays
+clear of the weak-identification band at \eqn{K \approx J} --- see
+\strong{Choosing the basis dimension} below.}
 
 \item{degree}{B-spline degree (default 3, cubic).}
 
@@ -52,6 +59,10 @@ for numerical stability. Default \code{1e-8}.}
 \item{phi_start}{Optional starting value for \eqn{\phi} (length
 \code{ndx + degree}). Defaults to the zero vector (uniform
 density).}
+
+\item{check_basis}{Logical: if \code{TRUE} (the default), warn when
+the basis dimension \eqn{K} lies within the weak-identification
+band \eqn{K < J + 4}. Set to \code{FALSE} to silence the check.}
 
 \item{verbose}{Logical: if \code{TRUE}, print one line per scoring
 iteration.}
@@ -80,6 +91,17 @@ penalty is minimised across the whole fine grid subject to the
 constraint. Solved by sequential quadratic programming (Newton steps
 on the Lagrangian, with the constraint linearised at each step).
 }
+\section{Choosing the basis dimension}{
+
+\code{pclm_exact} uses the same default \code{ndx} rule and the same
+\code{check_basis} guard as \code{\link{pclm}}; see
+\strong{Choosing the basis dimension} there. Because it has no
+smoothing parameter to select, \code{pclm_exact} is markedly more
+robust to a badly-sized basis than \code{pclm} --- but the fit is
+still smoothest, and the wide-bin shape best resolved, once
+\eqn{K \ge J + 4}.
+}
+
 \examples{
 data(bloodlead)
 fit <- pclm_exact(m = bloodlead$count,
