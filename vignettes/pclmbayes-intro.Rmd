@@ -80,7 +80,7 @@ fit_f <- pclm(
   wide_breaks   = with(bloodlead, cbind(lower, upper)),
   a             = 0, b = 80,
   ngrid         = 80L,
-  ndx           = 17L, degree = 3L,
+  degree        = 3L,
   penalty_order = 3L,
   select        = "BIC"
 )
@@ -99,7 +99,7 @@ fit_b <- bpclm(
   wide_breaks   = with(bloodlead, cbind(lower, upper)),
   a             = 0, b = 80,
   ngrid         = 80L,
-  ndx           = 17L, degree = 3L,
+  degree        = 3L,
   penalty_order = 3L,
   niter         = 5000L, burnin = 1000L, adapt = 500L,
   shape         = "unimodal",
@@ -155,7 +155,7 @@ fit_tb <- bpclm(
   wide_breaks   = with(tbdeaths1907, cbind(lower, upper)),
   a             = 0, b = 120,
   ngrid         = 120L,
-  ndx           = 17L, degree = 3L, penalty_order = 3L,
+  degree        = 3L, penalty_order = 3L,
   niter         = 4000L, burnin = 1000L, adapt = 500L,
   seed          = 2
 )
@@ -224,7 +224,7 @@ fit_e <- pclm_exact(
   m             = bloodlead$count,
   wide_breaks   = with(bloodlead, cbind(lower, upper)),
   a             = 0, b = 80,
-  ngrid         = 80L, ndx = 17L, degree = 3L, penalty_order = 3L
+  ngrid         = 80L, degree = 3L, penalty_order = 3L
 )
 max(abs(fit_e$fitted_counts - fit_e$m))     # ~ 1e-13
 ```
@@ -252,7 +252,7 @@ wb     <- cbind(seq(0, 95, by = 5), seq(5, 100, by = 5))
 ```{r ungroup-fit}
 fit_pe <- pclm_exact(m = m_band, wide_breaks = wb,
                      a = 0, b = 100, ngrid = 100L,
-                     ndx = 22L, degree = 3L, penalty_order = 3L)
+                     degree = 3L, penalty_order = 3L)
 yhat <- fit_pe$pi * sum(m_band)
 sqrt(mean((yhat - true_yearly) ^ 2))         # RMSE per single year
 max(abs(fit_pe$fitted_counts - m_band))      # exact preservation
@@ -285,7 +285,7 @@ Two distinct uncertainty objects are supported:
 ```{r posterior-predict}
 fit_b <- bpclm(m = m_band, wide_breaks = wb,
                a = 0, b = 100, ngrid = 100L,
-               ndx = 22L, degree = 3L, penalty_order = 3L,
+               degree = 3L, penalty_order = 3L,
                niter = 4000L, burnin = 1000L, adapt = 500L,
                seed = 7)
 fit_b <- calibrate(fit_b)               # exact band totals on every draw

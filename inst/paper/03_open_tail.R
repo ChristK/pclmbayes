@@ -139,9 +139,8 @@ for (X in terminal_grid) {
   cat("  open-bin width (terminal..104+open):",
       wb[nrow(wb), 2L] - wb[nrow(wb), 1L], "\n")
 
-  # `ndx` is left at its default: K = min(max(J + 7, 20), ngrid, 200). With
-  # J = 9 bins in every terminal scheme here that gives K = 20, unchanged
-  # from the fixed value used previously.
+  # The basis dimension is derived from the number of wide bins (J = 9 in
+  # every terminal scheme here). See ?pclm, "Choosing the basis dimension".
   f_p <- pclm(m = m_obs, wide_breaks = wb,
               a = a, b = b, ngrid = ngrid,
               degree = 3L, penalty_order = 3L,

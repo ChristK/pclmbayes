@@ -121,19 +121,19 @@ wb     <- cbind(seq(0, 95, by = 5L), seq(5, 100, by = 5L))
 t_pclm <- system.time(
   fit_pclm <- pclm(m = m_band, wide_breaks = wb,
                    a = 0, b = 100, ngrid = 100L,
-                   ndx = 22L, degree = 3L, penalty_order = 3L)
+                   degree = 3L, penalty_order = 3L)
 )[["elapsed"]]
 
 t_pclm_exact <- system.time(
   fit_exact <- pclm_exact(m = m_band, wide_breaks = wb,
                           a = 0, b = 100, ngrid = 100L,
-                          ndx = 22L, degree = 3L, penalty_order = 3L)
+                          degree = 3L, penalty_order = 3L)
 )[["elapsed"]]
 
 t_bpclm <- system.time(
   fit_b <- bpclm(m = m_band, wide_breaks = wb,
                  a = 0, b = 100, ngrid = 100L,
-                 ndx = 22L, degree = 3L, penalty_order = 3L,
+                 degree = 3L, penalty_order = 3L,
                  niter = 3000L, burnin = 1000L, adapt = 500L,
                  seed = 7L)
 )[["elapsed"]]
@@ -266,13 +266,13 @@ data(bloodlead)
 wb_b <- with(bloodlead, cbind(lower, upper))
 
 fit_b_pclm  <- pclm(      m = bloodlead$count, wide_breaks = wb_b,
-                          a = 0, b = 80, ngrid = 80L, ndx = 17L,
+                          a = 0, b = 80, ngrid = 80L,
                           degree = 3L, penalty_order = 3L)
 fit_b_exact <- pclm_exact(m = bloodlead$count, wide_breaks = wb_b,
-                          a = 0, b = 80, ngrid = 80L, ndx = 17L,
+                          a = 0, b = 80, ngrid = 80L,
                           degree = 3L, penalty_order = 3L)
 fit_b_bayes <- bpclm(     m = bloodlead$count, wide_breaks = wb_b,
-                          a = 0, b = 80, ngrid = 80L, ndx = 17L,
+                          a = 0, b = 80, ngrid = 80L,
                           degree = 3L, penalty_order = 3L,
                           niter = 4000L, burnin = 1000L, adapt = 500L,
                           shape = "unimodal", seed = 1L)
@@ -357,13 +357,13 @@ data(tbdeaths1907)
 wb_t <- with(tbdeaths1907, cbind(lower, upper))
 
 fit_t_pclm  <- pclm(      m = tbdeaths1907$count, wide_breaks = wb_t,
-                          a = 0, b = 120, ngrid = 120L, ndx = 17L,
+                          a = 0, b = 120, ngrid = 120L,
                           degree = 3L, penalty_order = 3L)
 fit_t_exact <- pclm_exact(m = tbdeaths1907$count, wide_breaks = wb_t,
-                          a = 0, b = 120, ngrid = 120L, ndx = 17L,
+                          a = 0, b = 120, ngrid = 120L,
                           degree = 3L, penalty_order = 3L)
 fit_t_bayes <- bpclm(     m = tbdeaths1907$count, wide_breaks = wb_t,
-                          a = 0, b = 120, ngrid = 120L, ndx = 17L,
+                          a = 0, b = 120, ngrid = 120L,
                           degree = 3L, penalty_order = 3L,
                           niter = 3000L, burnin = 1000L, adapt = 500L,
                           seed = 2L)

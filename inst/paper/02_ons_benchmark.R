@@ -154,10 +154,9 @@ fit_and_metrics <- function(dataset, scheme_name) {
   wb     <- make_scheme(scheme_name, a, b)
   m_wide <- aggregate_to_wide(counts_fine, fine_breaks, wb)
 
-  # Fit the three methods. `ndx` is left at its default, so the basis
-  # dimension adapts to the scheme: K = min(max(J + 7, 20), ngrid, 200).
-  # This matters here -- the five_year and realistic schemes give J = 19 to
-  # 22 wide bins, and a fixed K = 20 would sit inside the weak-identification
+  # Fit the three methods. The basis dimension adapts to each scheme, which
+  # matters here: five_year and realistic give J = 19 to 22 wide bins, and a
+  # basis that does not grow with J would sit inside the weak-identification
   # band K < J + 4. See ?pclm, "Choosing the basis dimension".
   f_p <- pclm(m = m_wide, wide_breaks = wb,
               a = a, b = b, ngrid = ngrid,

@@ -156,7 +156,7 @@
 #' data(bloodlead)
 #' fit <- pclm(m = bloodlead$count,
 #'             wide_breaks = with(bloodlead, cbind(lower, upper)),
-#'             a = 0, b = 80, ngrid = 80, ndx = 17, degree = 3,
+#'             a = 0, b = 80, ngrid = 80, degree = 3,
 #'             penalty_order = 3)
 #' summary(fit)
 #'

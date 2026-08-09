@@ -106,7 +106,7 @@ still smoothest, and the wide-bin shape best resolved, once
 data(bloodlead)
 fit <- pclm_exact(m = bloodlead$count,
                    wide_breaks = with(bloodlead, cbind(lower, upper)),
-                   a = 0, b = 80, ngrid = 80, ndx = 17, degree = 3,
+                   a = 0, b = 80, ngrid = 80, degree = 3,
                    penalty_order = 3)
 max(abs(fit$fitted_counts - fit$m))    # < 1e-8
 

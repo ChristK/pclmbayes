@@ -38,3 +38,6 @@ tests/figure/
 
 # knitr cache directories from local vignette/test knits
 /figure/
+
+# Paper reproduction outputs (regenerable: Rscript inst/paper/run_all.R)
+/paper_results/

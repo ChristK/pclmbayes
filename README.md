@@ -81,7 +81,7 @@ data(bloodlead)
 fit_b <- bpclm(
   m           = bloodlead$count,
   wide_breaks = with(bloodlead, cbind(lower, upper)),
-  a = 0, b = 80, ngrid = 80, ndx = 17, degree = 3, penalty_order = 3,
+  a = 0, b = 80, ngrid = 80, degree = 3, penalty_order = 3,
   niter = 5000, burnin = 1000, adapt = 500,
   shape = "unimodal", seed = 1
 )

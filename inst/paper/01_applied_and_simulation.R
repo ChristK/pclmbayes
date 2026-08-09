@@ -69,10 +69,8 @@ wb_tb <- cbind(tbdeaths1907$lower, tbdeaths1907$upper)
 a_tb       <- 0
 b_tb       <- 120
 ngrid_tb   <- 120
-# `ndx` is left at its default, so the basis dimension is derived from the
-# number of wide bins as K = min(max(J + 7, 20), ngrid, 200). With J = 12
-# bands here that gives K = 20 cubic B-splines, the value used by Lambert
-# and Eilers (2009). See ?pclm, "Choosing the basis dimension".
+# The basis dimension is derived from the number of wide bins;
+# see ?pclm, "Choosing the basis dimension".
 degree_tb  <- 3L
 penord_tb  <- 3L       # 3rd-order penalty (paper recommendation)
 

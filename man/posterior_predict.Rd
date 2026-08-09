@@ -137,7 +137,7 @@ fine-cell counts and any cumulative sum of them.
 data(bloodlead)
 fit <- bpclm(m = bloodlead$count,
              wide_breaks = with(bloodlead, cbind(lower, upper)),
-             a = 0, b = 80, ngrid = 80, ndx = 17,
+             a = 0, b = 80, ngrid = 80,
              niter = 2000, burnin = 500, adapt = 300, seed = 1)
 fit <- calibrate(fit)                                # exact band totals
 pp  <- posterior_predict(fit, type = "predictive")
