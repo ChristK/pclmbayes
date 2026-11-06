@@ -15,7 +15,7 @@
 ^cran-comments\.md$
 ^codecov\.yml$
 ^CRAN-RELEASE$
-# Standalone validation/diagnostic scripts (not testthat tests).
+# Standalone validation/diagnostic scripts (not tinytest unit tests).
 # Kept in the GitHub repo for reproducibility but not shipped in the
 # built tarball or run by R CMD check / covr.
 ^dev$
