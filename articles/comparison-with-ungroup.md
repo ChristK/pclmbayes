@@ -165,10 +165,10 @@ results <- data.frame(
 )
 results
 #>           algorithm RMSE_yearly max_bin_residual elapsed_sec
-#> 1              pclm    41.73115     6.039885e+01       0.015
-#> 2 bpclm + calibrate    34.62252     0.000000e+00       0.198
-#> 3        pclm_exact    28.05694     9.094947e-13       0.018
-#> 4     ungroup::pclm    78.29337     1.392698e+00       0.049
+#> 1              pclm    41.73115     6.039885e+01       0.017
+#> 2 bpclm + calibrate    34.62252     0.000000e+00       0.247
+#> 3        pclm_exact    28.05694     9.094947e-13       0.021
+#> 4     ungroup::pclm    78.29337     1.392698e+00       0.035
 ```
 
 The expected pattern:
